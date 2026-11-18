@@ -1,0 +1,618 @@
+/* ============================================
+   MediCare Hub – Design System & Dashboard CSS
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ---------- CSS Variables ---------- */
+:root {
+  --primary: #0F6CBD;
+  --primary-dark: #0B4F8A;
+  --accent: #14B8A6;
+  --bg: #F4F7FB;
+  --surface: #FFFFFF;
+  --text: #1E293B;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --danger: #DC2626;
+  --sidebar-width: 260px;
+  --sidebar-bg: #0B1929;
+  --sidebar-text: #94A3B8;
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ---------- Focus Accessibility ---------- */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  overflow-y: auto;
+  z-index: 1040;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .sidebar-logo {
+  padding: 24px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar .nav-menu {
+  flex-grow: 1;
+  padding: 16px 0;
+}
+
+.sidebar .nav-link {
+  color: var(--sidebar-text);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 0;
+  transition: all 150ms ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.sidebar .nav-link.active {
+  background-color: rgba(15, 108, 189, 0.15);
+  color: var(--primary);
+  border-left-color: var(--primary);
+}
+
+.sidebar .nav-link i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar .user-block {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 8px 24px;
+}
+
+/* ---------- Main Content ---------- */
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  padding: 0;
+}
+
+.top-bar {
+  background-color: var(--surface);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.content-wrapper {
+  padding: 24px;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background-color: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.stat-card {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.stat-card .stat-label {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.stat-card .stat-icon,
+.stat-icon {
+  display: none !important;
+}
+
+.sidebar-logo-icon,
+.sidebar-nav .nav-link i {
+  display: none !important;
+}
+
+.stat-icon.blue {
+  background-color: rgba(15, 108, 189, 0.1);
+  color: var(--primary);
+}
+
+.stat-icon.teal {
+  background-color: rgba(20, 184, 166, 0.1);
+  color: var(--accent);
+}
+
+.stat-icon.green {
+  background-color: rgba(22, 163, 74, 0.1);
+  color: var(--success);
+}
+
+.stat-icon.orange {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
+
+/* ---------- Tables ---------- */
+.table-container {
+  background-color: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: var(--bg);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  text-align: left;
+}
+
+.table td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(15, 108, 189, 0.02);
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* ---------- Action Buttons ---------- */
+.btn-action {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: transparent;
+  color: var(--muted);
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+.btn-action:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-action.delete:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ---------- Toolbar ---------- */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  padding-left: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  min-width: 280px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 14px;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background-color: var(--surface);
+  transition: border-color 150ms ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 108, 189, 0.1);
+}
+
+.search-box i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* ---------- Forms ---------- */
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  transition: border-color 150ms ease;
+  width: 100%;
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 108, 189, 0.1);
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--text);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  background-color: var(--primary);
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 150ms ease;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background-color: transparent;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 150ms ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+/* ---------- Page Header ---------- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ---------- Flash Messages ---------- */
+.flash-message {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  min-width: 320px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.flash-message.hiding {
+  animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideOut {
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* ---------- Report / SQL Box ---------- */
+.sql-box {
+  background-color: #1E293B;
+  color: #E2E8F0;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.report-card {
+  margin-bottom: 24px;
+}
+
+/* ---------- Login Page ---------- */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.login-brand {
+  flex: 0 0 45%;
+  background: linear-gradient(135deg, var(--primary) 0%, #0D5BA3 50%, var(--accent) 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+}
+
+.login-form-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.demo-box {
+  background-color: rgba(15, 108, 189, 0.05);
+  border: 1px solid rgba(15, 108, 189, 0.15);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 0.8rem;
+}
+
+/* ---------- Booking Stepper ---------- */
+.stepper {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.stepper .step {
+  flex: 1;
+  text-align: center;
+  padding: 12px 16px;
+  border-bottom: 3px solid var(--border);
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.stepper .step.active {
+  border-bottom-color: var(--primary);
+  color: var(--primary);
+}
+
+.stepper .step.completed {
+  border-bottom-color: var(--success);
+  color: var(--success);
+}
+
+.doctor-card {
+  cursor: pointer;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 150ms ease;
+  text-align: center;
+}
+
+.doctor-card:hover,
+.doctor-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 108, 189, 0.1);
+}
+
+/* ---------- Prescription Print ---------- */
+.prescription-header {
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.clinic-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.signature-line {
+  border-top: 1px solid #333;
+  width: 200px;
+  margin-top: 60px;
+  padding-top: 8px;
+}
+
+/* ---------- Empty State ---------- */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* ---------- Sidebar Overlay (Mobile) ---------- */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1035;
+}
+
+.sidebar-overlay.show {
+  display: block;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .login-brand {
+    display: none;
+  }
+
+  .login-form-wrapper {
+    padding: 24px;
+  }
+}
