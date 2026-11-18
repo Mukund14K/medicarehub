@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if ($doctorId > 0) {
         $stmt = $pdo->prepare('DELETE FROM Doctor WHERE doctor_id = ?');
         $stmt->execute([$doctorId]);
-        setFlash('success', 'Doctor record successfully removed.');
+        setFlash('success', 'Doctor record deleted.');
     }
     header('Location: /medicarehub/admin/doctors.php');
     exit;
@@ -42,7 +42,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $doctors = $stmt->fetchAll();
 
-$pageTitle = 'Doctors Management';
+$pageTitle = 'Doctors';
 $breadcrumbs = [
     ['label' => 'Dashboard', 'url' => '/medicarehub/admin/dashboard.php'],
     ['label' => 'Doctors', 'url' => null],
@@ -53,85 +53,67 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="page-header">
     <div>
-        <h3 class="page-title">Medical Specialists</h3>
-        <p class="text-muted small mb-0">Manage clinic medical staff, specialties and schedules</p>
+        <h1 class="page-title">Doctors</h1>
+        <p class="page-description">Medical staff directory, clinical specialties and schedules</p>
     </div>
-    <a href="/medicarehub/admin/doctor_form.php" class="btn btn-primary">
-        <i class="bi bi-person-plus-fill me-2"></i>Add Doctor
-    </a>
+    <a href="/medicarehub/admin/doctor_form.php" class="btn btn-primary">Add doctor</a>
 </div>
 
 <!-- Toolbar -->
-<div class="card mb-4">
+<div class="card mb-3">
     <div class="card-body p-3">
         <form method="GET" action="/medicarehub/admin/doctors.php" class="row g-2 align-items-center">
             <div class="col-md-5">
-                <div class="input-group">
-                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search by name, specialization, phone..." value="<?php echo e($search); ?>">
+                <div class="search-input-group">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, specialization, or phone" value="<?php echo e($search); ?>">
                 </div>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-outline-primary">Search</button>
+                <button type="submit" class="btn btn-secondary">Search</button>
                 <?php if (!empty($search)): ?>
-                    <a href="/medicarehub/admin/doctors.php" class="btn btn-outline-secondary">Clear</a>
+                    <a href="/medicarehub/admin/doctors.php" class="btn btn-secondary">Clear</a>
                 <?php endif; ?>
             </div>
-            <div class="col-auto ms-auto text-muted small">
-                Total Doctors: <strong><?php echo $pagination['total_records']; ?></strong>
+            <div class="col-auto ms-auto text-secondary small tabular-nums">
+                Total doctors: <?php echo $pagination['total_records']; ?>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Doctors Table -->
-<div class="card">
+<div class="table-container">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table align-middle">
+            <thead>
                 <tr>
-                    <th class="ps-4">ID</th>
-                    <th>Doctor Name</th>
+                    <th style="width: 80px;">ID</th>
+                    <th>Doctor name</th>
                     <th>Specialization</th>
                     <th>Phone</th>
-                    <th>Total Consultations</th>
-                    <th class="text-end pe-4">Actions</th>
+                    <th>Consultations</th>
+                    <th class="text-end" style="width: 140px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($doctors)): ?>
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="bi bi-person-badge fs-1 d-block mb-2 text-secondary opacity-50"></i>
-                            No doctors found.
-                        </td>
+                        <td colspan="6" class="text-center py-4 text-muted">No doctor records found.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($doctors as $d): ?>
                         <tr>
-                            <td class="ps-4 font-monospace text-muted">#<?php echo e((string)$d['doctor_id']); ?></td>
+                            <td class="text-secondary tabular-nums">#<?php echo e((string)$d['doctor_id']); ?></td>
+                            <td class="fw-medium"><?php echo e($d['name']); ?></td>
                             <td>
-                                <div class="fw-semibold text-dark"><?php echo e($d['name']); ?></div>
+                                <span class="badge badge-status badge-status-neutral"><?php echo e($d['specialization']); ?></span>
                             </td>
-                            <td>
-                                <span class="badge bg-primary-subtle text-primary border">
-                                    <i class="bi bi-award me-1"></i><?php echo e($d['specialization']); ?>
-                                </span>
-                            </td>
-                            <td>
-                                <i class="bi bi-telephone text-muted me-1 small"></i>
-                                <?php echo e($d['phone']); ?>
-                            </td>
-                            <td>
-                                <span class="badge bg-light text-dark border"><?php echo e((string)$d['total_appointments']); ?> visits</span>
-                            </td>
-                            <td class="text-end pe-4">
-                                <a href="/medicarehub/admin/doctor_form.php?id=<?php echo $d['doctor_id']; ?>" class="btn btn-sm btn-action" title="Edit Doctor" data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button type="button" class="btn btn-sm btn-action delete" title="Delete Doctor" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="/medicarehub/admin/doctors.php" data-id="<?php echo $d['doctor_id']; ?>" data-name="<?php echo e($d['name']); ?>">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                            <td class="tabular-nums"><?php echo e($d['phone']); ?></td>
+                            <td class="tabular-nums"><?php echo e((string)$d['total_appointments']); ?></td>
+                            <td class="text-end">
+                                <a href="/medicarehub/admin/doctor_form.php?id=<?php echo $d['doctor_id']; ?>" class="table-action-link">Edit</a>
+                                <button type="button" class="table-action-link text-danger border-0 bg-transparent p-0" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="/medicarehub/admin/doctors.php" data-id="<?php echo $d['doctor_id']; ?>" data-name="<?php echo e($d['name']); ?>">Delete</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -141,7 +123,8 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 
     <?php if ($pagination['total_pages'] > 1): ?>
-        <div class="card-footer bg-transparent py-3">
+        <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="text-muted small tabular-nums">Showing <?php echo ($pagination['offset'] + 1); ?> to <?php echo min($pagination['offset'] + 8, $pagination['total_records']); ?> of <?php echo $pagination['total_records']; ?> records</span>
             <?php echo renderPagination($pagination['total_pages'], $pagination['current_page'], '/medicarehub/admin/doctors.php' . (!empty($search) ? '?search=' . urlencode($search) : '')); ?>
         </div>
     <?php endif; ?>
@@ -155,29 +138,12 @@ require_once __DIR__ . '/../includes/header.php';
                 const id = this.getAttribute('data-id');
                 const name = this.getAttribute('data-name');
                 const deleteForm = document.getElementById('deleteForm');
-                
-                let idInput = deleteForm.querySelector('input[name="id"]');
-                if (!idInput) {
-                    idInput = document.createElement('input');
-                    idInput.type = 'hidden';
-                    idInput.name = 'id';
-                    deleteForm.appendChild(idInput);
-                }
-                idInput.value = id;
+                const deleteItemName = document.getElementById('deleteItemName');
+                const deleteIdInput = document.getElementById('deleteIdInput');
 
-                let actionInput = deleteForm.querySelector('input[name="action"]');
-                if (!actionInput) {
-                    actionInput = document.createElement('input');
-                    actionInput.type = 'hidden';
-                    actionInput.name = 'action';
-                    deleteForm.appendChild(actionInput);
-                }
-                actionInput.value = 'delete';
-
-                const nameDisplay = document.getElementById('deleteModalItemName');
-                if (nameDisplay && name) {
-                    nameDisplay.textContent = 'Record: ' + name;
-                }
+                if (deleteForm) deleteForm.action = this.getAttribute('data-action') || '';
+                if (deleteIdInput) deleteIdInput.value = id;
+                if (deleteItemName) deleteItemName.textContent = name ? '"' + name + '"' : 'this record';
             });
         });
     });

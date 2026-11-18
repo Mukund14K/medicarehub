@@ -13,13 +13,15 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap Icons 1.11 -->
+    <!-- Bootstrap Icons 1.11 (used strictly for outline icons in sidebar and table action buttons) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts - IBM Plex Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS -->
+    <!-- Enterprise Custom CSS -->
     <link href="/medicarehub/assets/css/style.css" rel="stylesheet">
 
     <?php if (isset($isPrintPage) && $isPrintPage): ?>
@@ -29,7 +31,6 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 
 <?php
-// Determine if sidebar should be shown
 $noSidebar = isset($noSidebar) ? $noSidebar : false;
 $userRole = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 
@@ -38,9 +39,10 @@ if (!$userRole) {
 }
 ?>
 
-<body class="<?php echo !$noSidebar ? 'd-flex' : ''; ?>">
+<body>
 
 <?php if (!$noSidebar): ?>
+<div class="main-wrapper">
     <!-- Sidebar -->
     <?php
     switch ($userRole) {
@@ -57,83 +59,31 @@ if (!$userRole) {
     ?>
 
     <!-- Main Content Wrapper -->
-    <div class="main-content flex-grow-1">
+    <div class="main-content">
 
-        <!-- Top Bar -->
-        <nav class="top-bar d-flex align-items-center justify-content-between px-4 py-3 bg-white border-bottom">
+        <!-- Top Bar (56px, White, 1px Border) -->
+        <header class="top-bar">
             <div class="d-flex align-items-center gap-3">
-                <!-- Hamburger Toggle (mobile) -->
-                <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle" type="button">
-                    <i class="bi bi-list fs-5"></i>
+                <button class="btn btn-outline-secondary d-lg-none p-1" style="height: 32px; width: 32px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Toggle navigation">
+                    <i class="bi bi-list" style="display: inline-block !important; font-size: 18px;"></i>
                 </button>
 
-                <div>
-                    <?php if (isset($pageTitle)): ?>
-                        <h4 class="mb-0 fw-semibold"><?php echo htmlspecialchars($pageTitle); ?></h4>
-                    <?php endif; ?>
-
-                    <?php if (isset($breadcrumbs) && is_array($breadcrumbs) && count($breadcrumbs) > 0): ?>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0 small">
-                                <?php foreach ($breadcrumbs as $index => $crumb): ?>
-                                    <?php if ($index === count($breadcrumbs) - 1): ?>
-                                        <li class="breadcrumb-item active" aria-current="page">
-                                            <?php echo htmlspecialchars($crumb['label']); ?>
-                                        </li>
-                                    <?php else: ?>
-                                        <li class="breadcrumb-item">
-                                            <a href="<?php echo htmlspecialchars($crumb['url']); ?>">
-                                                <?php echo htmlspecialchars($crumb['label']); ?>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </ol>
-                        </nav>
-                    <?php endif; ?>
-                </div>
+                <h1 class="top-bar-title"><?php echo htmlspecialchars($pageTitle ?? 'MediCare Hub'); ?></h1>
             </div>
 
-            <div class="d-flex align-items-center gap-3">
-                <!-- Current Date -->
-                <span class="text-muted d-none d-md-inline">
-                    <i class="bi bi-calendar3 me-1"></i>
-                    <?php echo date('l, F j, Y'); ?>
-                </span>
-
-                <!-- User Dropdown -->
+            <div class="top-bar-meta">
                 <?php if (isset($_SESSION['user_name'])): ?>
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle fs-5"></i>
-                            <span class="d-none d-sm-inline"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <?php if ($userRole === 'patient'): ?>
-                                <li>
-                                    <a class="dropdown-item" href="/medicarehub/patient/profile.php">
-                                        <i class="bi bi-person me-2"></i>My Profile
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                            <?php endif; ?>
-                            <li>
-                                <a class="dropdown-item text-danger" href="/medicarehub/logout.php">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <span class="top-bar-user"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
                 <?php endif; ?>
+                <span class="top-bar-date d-none d-sm-inline"><?php echo date('d M Y'); ?></span>
             </div>
-        </nav>
-        <!-- End Top Bar -->
+        </header>
 
         <!-- Flash Messages -->
         <?php if (function_exists('getFlash') && $flash = getFlash()): ?>
             <div class="px-4 pt-3">
-                <div class="alert alert-<?php echo htmlspecialchars($flash['type']); ?> alert-dismissible fade show" role="alert" id="flashMessage">
-                    <?php echo htmlspecialchars($flash['message']); ?>
+                <div class="alert alert-<?php echo htmlspecialchars($flash['type']); ?> alert-dismissible fade show mb-0" role="alert" id="flashMessage">
+                    <span><?php echo htmlspecialchars($flash['message']); ?></span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
@@ -144,20 +94,20 @@ if (!$userRole) {
                         var bsAlert = bootstrap.Alert.getOrCreateInstance(flash);
                         bsAlert.close();
                     }
-                }, 4000);
+                }, 5000);
             </script>
         <?php endif; ?>
 
-        <!-- Main Container -->
-        <div class="container-fluid p-4">
+        <!-- Content Body (24px padding) -->
+        <main class="content-body">
 
 <?php else: ?>
 
-    <!-- Flash Messages (no-sidebar pages) -->
+    <!-- Flash Messages (Auth/No-Sidebar Pages) -->
     <?php if (function_exists('getFlash') && $flash = getFlash()): ?>
-        <div class="container mt-3">
+        <div class="container pt-3" style="max-width: 480px;">
             <div class="alert alert-<?php echo htmlspecialchars($flash['type']); ?> alert-dismissible fade show" role="alert" id="flashMessage">
-                <?php echo htmlspecialchars($flash['message']); ?>
+                <span><?php echo htmlspecialchars($flash['message']); ?></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
@@ -168,7 +118,7 @@ if (!$userRole) {
                     var bsAlert = bootstrap.Alert.getOrCreateInstance(flash);
                     bsAlert.close();
                 }
-            }, 4000);
+            }, 5000);
         </script>
     <?php endif; ?>
 

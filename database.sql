@@ -103,16 +103,16 @@ INSERT INTO Patient (name, age, gender, phone) VALUES
 -- Seed Data: Medicines (10)
 -- ============================================================
 INSERT INTO Medicine (medicine_name, type, price) VALUES
-('Aspirin', 'Tablet', 15.00),
-('Amoxicillin', 'Capsule', 45.00),
-('Ibuprofen', 'Tablet', 20.00),
-('Cetirizine', 'Tablet', 12.00),
-('Metformin', 'Tablet', 35.00),
-('Omeprazole', 'Capsule', 50.00),
-('Diclofenac Gel', 'Topical', 85.00),
-('Calcium Supplement', 'Tablet', 60.00),
-('Vitamin D3', 'Capsule', 40.00),
-('Paracetamol', 'Tablet', 10.00);
+('Aspirin 75mg', 'Tablet', 15.00),
+('Amoxicillin 500mg', 'Capsule', 45.00),
+('Ibuprofen 400mg', 'Tablet', 20.00),
+('Cetirizine 10mg', 'Tablet', 12.00),
+('Metformin 500mg', 'Tablet', 35.00),
+('Omeprazole 20mg', 'Capsule', 50.00),
+('Diclofenac Gel 1%', 'Topical', 85.00),
+('Calcium Carbonate 500mg', 'Tablet', 60.00),
+('Vitamin D3 60000 IU', 'Capsule', 40.00),
+('Paracetamol 650mg', 'Tablet', 10.00);
 
 -- ============================================================
 -- Seed Data: Appointments (28 total)

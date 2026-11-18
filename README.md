@@ -8,22 +8,22 @@ A healthcare management web application engineered with **PHP 8 (PDO)**, **MySQL
 
 ### Role-Based Portals
 - **Admin**:
-  - Analytical Dashboard with 4 stat counters and dynamic **Chart.js** visualizations:
-    - Appointments per Specialist (Bar chart).
-    - Status breakdown ratio (Doughnut chart).
+  - Analytical Dashboard with 4 stat counters and dynamic flat **Chart.js** visualizations:
+    - Appointments per Specialist (single-hue clinical bar chart).
+    - Status breakdown (horizontal stacked bar chart in grey-blue shades).
   - Complete **CRUD** with live search, server-side pagination, and modal confirmation for **Patients**, **Doctors**, and **Pharmacy Catalog (Medicines)**.
   - Full **Appointments Management** (creation, rescheduling, status updates, deletion).
-  - **SQL Reports Engine**: 5 exact parameterized SQL queries with collapsible query inspection (`Show SQL`) and instant **CSV export**.
+  - **SQL Reports Engine**: 5 exact parameterized SQL queries with collapsible query inspection (`View query`) and instant **CSV export**.
 - **Doctor**:
   - Focused dashboard with today's queue and upcoming 7-day bookings.
   - One-click **Mark Completed** status handler.
   - Interactive **Digital Prescription Form**: add multiple medications, set dosages/durations, edit, remove, and calculate total medicine costs in real time.
-  - Dedicated **Printable Prescription Slip** styled with official clinic letterhead and print-specific CSS.
+  - Dedicated **Printable Prescription Slip** styled with clean monochrome clinic letterhead and print-specific CSS.
 - **Patient**:
   - Personalized patient dashboard showing confirmed visits and consultation history.
-  - Interactive **3-Step Appointment Booking Stepper**:
+  - Interactive **3-Step Appointment Booking**:
     1. Select Specialization.
-    2. Dynamically fetch and display Doctor profile cards via AJAX.
+    2. Select doctor from clean directory table.
     3. Choose Consultation Date with past-date prevention.
   - **Double-booking prevention**: blocks same doctor on same date and limits doctors to 10 patients per day.
   - Cancel scheduled appointments.
@@ -165,8 +165,8 @@ The Admin Reports page (`/admin/reports.php`) executes and displays the followin
 ```text
 medicarehub/
 ├── index.php                  # Landing gateway & role-based routing
-├── login.php                  # Split-screen authentication & demo credentials
-├── register.php               # Patient self-registration portal
+├── login.php                  # Single-card clinical authentication & demo credentials
+├── register.php               # Patient registration portal
 ├── logout.php                 # Session invalidation & teardown
 ├── database.sql               # Complete schema and seed datasets
 ├── README.md                  # System manual and deployment guide
@@ -177,14 +177,14 @@ medicarehub/
 ├── includes/
 │   ├── auth.php               # Role guardrails, session helpers, CSRF engine
 │   ├── functions.php          # Pagination, CSV generator, sanitizer, badge helpers
-│   ├── header.php             # HTML head, CDN links, top navbar, toast alerts
-│   ├── sidebar_admin.php      # Admin navigation menu
+│   ├── header.php             # HTML head, IBM Plex Sans, top navbar, factual alerts
+│   ├── sidebar_admin.php      # Admin navigation menu (240px white background)
 │   ├── sidebar_doctor.php     # Doctor navigation menu
 │   ├── sidebar_patient.php    # Patient navigation menu
 │   └── footer.php             # Closing tags, scripts, delete confirmation modal
 │
 ├── admin/
-│   ├── dashboard.php          # KPI cards, Chart.js bar & doughnut charts
+│   ├── dashboard.php          # 4 stat cards, flat Chart.js bar charts
 │   ├── patients.php           # Patient directory with search & pagination
 │   ├── patient_form.php       # Add / Edit patient demographics
 │   ├── doctors.php            # Specialist staff directory
@@ -200,28 +200,28 @@ medicarehub/
 │   ├── dashboard.php          # Today's queue & quick completion handler
 │   ├── appointments.php       # Doctor's scheduled appointments
 │   ├── patients.php           # Assigned patient cohort history
-│   ├── prescription_form.php  # Interactive digital prescription builder
-│   └── prescription_print.php # Official printable Rx slip
+│   ├── prescription_form.php  # Itemized digital prescription builder
+│   └── prescription_print.php # Monochrome clinical printable Rx slip
 │
 ├── patient/
-│   ├── dashboard.php          # Patient overview & quick booking shortcuts
-│   ├── book_appointment.php   # 3-step interactive booking wizard
+│   ├── dashboard.php          # Patient overview & scheduled visits
+│   ├── book_appointment.php   # 3-step structured booking flow
 │   ├── my_appointments.php    # Active bookings & cancellation handler
 │   ├── prescriptions.php      # Prescription archive by consultation
-│   ├── prescription_print.php # Printable prescription copy
+│   ├── prescription_print.php # Monochrome printable prescription copy
 │   ├── profile.php            # Patient demographics editor
 │   └── get_doctors.php        # AJAX JSON endpoint for specialty filtering
 │
 └── assets/
     ├── css/
-    │   ├── style.css          # Healthcare design system (Inter, CSS variables)
-    │   └── print.css          # Print-only styles for prescription slips
+    │   ├── style.css          # Enterprise clinical design system (IBM Plex Sans, CSS variables)
+    │   └── print.css          # Monochrome print styles for prescription slips
     ├── js/
     │   ├── app.js             # Sidebar toggle, delete modal binder, toast auto-dismiss
-    │   ├── charts.js          # Chart.js initialization for admin dashboard
-    │   └── booking.js         # AJAX doctor card generator & booking stepper
+    │   ├── charts.js          # Flat Chart.js configuration for admin dashboard
+    │   └── booking.js         # Table-based doctor selection & booking flow
     └── img/
-        └── logo.svg           # Vector medical cross branding
+        └── logo.svg           # Clean monochrome clinical cross mark
 ```
 
 ---

@@ -1,33 +1,24 @@
 /**
- * MediCare Hub - Dashboard Charts (Chart.js)
- * Reads data from window.chartData set by the dashboard PHP.
+ * MediCare Hub - Enterprise Clinical Charts (Chart.js)
+ * Flat presentation, no animations, no gradients, clinical monochrome palette.
  */
 document.addEventListener('DOMContentLoaded', function () {
-
     const chartData = window.chartData;
     if (!chartData) return;
 
-    // Theme color palette for the bar chart
-    const themePalette = [
-        '#0F6CBD', '#16A34A', '#9333EA', '#EA580C',
-        '#0891B2', '#D97706', '#DC2626', '#4F46E5',
-        '#059669', '#BE185D', '#7C3AED', '#2563EB'
-    ];
-
-    const fontFamily = "'Inter', sans-serif";
+    const fontFamily = "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+    const accentColor = '#1F4E79';
+    const borderColor = '#DADFE6';
+    const textSecondary = '#5B6675';
 
     // ──────────────────────────────────────────────
-    // 1. Bar Chart – Appointments per Doctor
+    // 1. Bar Chart: Appointments by Specialist
+    // Single color: --accent (#1F4E79), flat, no animation
     // ──────────────────────────────────────────────
     const appointmentsCtx = document.getElementById('appointmentsChart');
     if (appointmentsCtx) {
         const doctorLabels = chartData.doctors || [];
         const doctorCounts = chartData.doctorCounts || [];
-
-        // Assign colors from palette, cycling if more doctors than colors
-        const barColors = doctorLabels.map(function (_, i) {
-            return themePalette[i % themePalette.length];
-        });
 
         new Chart(appointmentsCtx, {
             type: 'bar',
@@ -36,42 +27,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Appointments',
                     data: doctorCounts,
-                    backgroundColor: barColors,
+                    backgroundColor: accentColor,
                     borderColor: 'transparent',
                     borderWidth: 0,
-                    borderRadius: 6,
-                    borderSkipped: false
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    maxBarThickness: 32
                 }]
             },
             options: {
+                animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
-                        titleFont: { family: fontFamily },
-                        bodyFont: { family: fontFamily }
+                        enabled: true,
+                        titleFont: { family: fontFamily, size: 12 },
+                        bodyFont: { family: fontFamily, size: 12 },
+                        cornerRadius: 4,
+                        padding: 8
                     }
                 },
                 scales: {
                     x: {
                         ticks: {
-                            font: { family: fontFamily, size: 12 }
+                            font: { family: fontFamily, size: 12 },
+                            color: textSecondary
                         },
-                        grid: {
-                            display: false
-                        }
+                        grid: { display: false }
                     },
                     y: {
                         beginAtZero: true,
                         ticks: {
                             font: { family: fontFamily, size: 12 },
+                            color: textSecondary,
                             precision: 0
                         },
                         grid: {
-                            color: 'rgba(0, 0, 0, 0.06)'
+                            color: borderColor,
+                            drawBorder: false
                         }
                     }
                 }
@@ -80,51 +75,65 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ──────────────────────────────────────────────
-    // 2. Doughnut Chart – Appointments by Status
+    // 2. Status Chart: Horizontal Bar Chart
+    // Shades of grey-blue: #1F4E79 (Scheduled), #6B8CAE (Completed), #B7C4D3 (Cancelled)
     // ──────────────────────────────────────────────
     const statusCtx = document.getElementById('statusChart');
     if (statusCtx) {
         const statusLabels = ['Scheduled', 'Completed', 'Cancelled'];
         const statusCounts = chartData.statusCounts || [0, 0, 0];
-        const statusColors = ['#0F6CBD', '#16A34A', '#DC2626'];
+        const statusColors = ['#1F4E79', '#6B8CAE', '#B7C4D3'];
 
         new Chart(statusCtx, {
-            type: 'doughnut',
+            type: 'bar',
             data: {
                 labels: statusLabels,
                 datasets: [{
+                    label: 'Count',
                     data: statusCounts,
                     backgroundColor: statusColors,
-                    borderColor: '#ffffff',
-                    borderWidth: 2,
-                    hoverOffset: 6
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    maxBarThickness: 24
                 }]
             },
             options: {
+                indexAxis: 'y',
+                animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '65%',
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            font: {
-                                family: fontFamily,
-                                size: 13
-                            }
-                        }
-                    },
+                    legend: { display: false },
                     tooltip: {
-                        titleFont: { family: fontFamily },
-                        bodyFont: { family: fontFamily }
+                        enabled: true,
+                        titleFont: { family: fontFamily, size: 12 },
+                        bodyFont: { family: fontFamily, size: 12 },
+                        cornerRadius: 4,
+                        padding: 8
                     }
                 },
-                scales: {} // No grid lines for doughnut
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: { family: fontFamily, size: 12 },
+                            color: textSecondary,
+                            precision: 0
+                        },
+                        grid: {
+                            color: borderColor,
+                            drawBorder: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: { family: fontFamily, size: 12 },
+                            color: textSecondary
+                        },
+                        grid: { display: false }
+                    }
+                }
             }
         });
     }
-
 });

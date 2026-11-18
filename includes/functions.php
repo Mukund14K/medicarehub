@@ -82,15 +82,15 @@ function renderPagination(int $totalPages, int $currentPage, string $baseUrl): s
 
     // Previous button
     if ($currentPage <= 1) {
-        $html .= '<li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>';
+        $html .= '<li class="page-item disabled"><span class="page-link">Previous</span></li>';
     } else {
-        $html .= '<li class="page-item"><a class="page-link" href="' . e($buildUrl($currentPage - 1)) . '">&laquo; Previous</a></li>';
+        $html .= '<li class="page-item"><a class="page-link" href="' . e($buildUrl($currentPage - 1)) . '">Previous</a></li>';
     }
 
     // Page numbers
     for ($i = 1; $i <= $totalPages; $i++) {
         if ($i === $currentPage) {
-            $html .= '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+            $html .= '<li class="page-item active" aria-current="page"><span class="page-link">' . $i . '</span></li>';
         } else {
             $html .= '<li class="page-item"><a class="page-link" href="' . e($buildUrl($i)) . '">' . $i . '</a></li>';
         }
@@ -98,9 +98,9 @@ function renderPagination(int $totalPages, int $currentPage, string $baseUrl): s
 
     // Next button
     if ($currentPage >= $totalPages) {
-        $html .= '<li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>';
+        $html .= '<li class="page-item disabled"><span class="page-link">Next</span></li>';
     } else {
-        $html .= '<li class="page-item"><a class="page-link" href="' . e($buildUrl($currentPage + 1)) . '">Next &raquo;</a></li>';
+        $html .= '<li class="page-item"><a class="page-link" href="' . e($buildUrl($currentPage + 1)) . '">Next</a></li>';
     }
 
     $html .= '</ul>';

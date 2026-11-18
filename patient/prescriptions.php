@@ -48,28 +48,21 @@ foreach ($appointments as $apt) {
     ];
 }
 
-$pageTitle = 'My Prescriptions';
-$breadcrumbs = [
-    ['label' => 'Dashboard', 'url' => '/medicarehub/patient/dashboard.php'],
-    ['label' => 'Prescriptions', 'url' => null],
-];
-
+$pageTitle = 'Prescriptions';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="page-header">
     <div>
-        <h3 class="page-title">Prescription Archive</h3>
-        <p class="text-muted small mb-0">Review past medication regimens, dosing guidelines, and print official slips</p>
+        <h2 class="page-title">Prescriptions</h2>
+        <p class="page-description">Archived medication records and printable consultation slips</p>
     </div>
 </div>
 
 <?php if (empty($prescriptionsByAppointment)): ?>
     <div class="card">
-        <div class="card-body text-center py-5 text-muted">
-            <i class="bi bi-file-earmark-medical fs-1 d-block mb-3 text-secondary opacity-50"></i>
-            <h5 class="fw-semibold text-dark">No Prescriptions Issued Yet</h5>
-            <p class="small text-muted mb-0">When your doctor prescribes medications during an appointment, they will be archived here.</p>
+        <div class="card-body">
+            <div class="empty-state">No prescription records found for this patient account.</div>
         </div>
     </div>
 <?php else: ?>
@@ -80,48 +73,37 @@ require_once __DIR__ . '/../includes/header.php';
         $total = $block['total'];
         ?>
         <div class="card mb-4">
-            <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="card-header">
                 <div>
-                    <h5 class="fw-semibold mb-0">
-                        Consultation with <?php echo e($apt['doctor_name']); ?>
-                    </h5>
-                    <small class="text-muted">
-                        <span class="badge bg-light text-dark border me-2"><?php echo e($apt['specialization']); ?></span>
-                        <i class="bi bi-calendar3 me-1"></i><?php echo formatDate($apt['appointment_date']); ?>
-                        &middot; Slip #RX-<?php echo str_pad((string)$apt['appointment_id'], 5, '0', STR_PAD_LEFT); ?>
-                    </small>
+                    <div>Consultation with <?php echo e($apt['doctor_name']); ?> (<?php echo e($apt['specialization']); ?>)</div>
+                    <div class="small text-muted font-normal">Date: <?php echo formatDate($apt['appointment_date']); ?> &middot; Rx #RX-<?php echo str_pad((string)$apt['appointment_id'], 5, '0', STR_PAD_LEFT); ?></div>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-success-subtle text-success-emphasis border px-3 py-2">
-                        Total: <?php echo formatCurrency($total); ?>
-                    </span>
-                    <a href="/medicarehub/patient/prescription_print.php?appointment_id=<?php echo $apt['appointment_id']; ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-printer me-1"></i>Print Slip
-                    </a>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="small text-muted">Estimated total: <strong class="text-dark tabular-nums"><?php echo formatCurrency($total); ?></strong></span>
+                    <a href="/medicarehub/patient/prescription_print.php?appointment_id=<?php echo $apt['appointment_id']; ?>" target="_blank" class="btn btn-secondary btn-sm">Print slip</a>
                 </div>
             </div>
-
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <th class="ps-4">#</th>
-                            <th>Medicine Name</th>
+                            <th style="width: 50px;">#</th>
+                            <th>Medicine name</th>
                             <th>Form</th>
-                            <th>Dosage Instructions</th>
+                            <th>Dosage instructions</th>
                             <th>Duration</th>
-                            <th class="text-end pe-4">Price</th>
+                            <th class="text-end">Unit price</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($items as $idx => $it): ?>
                             <tr>
-                                <td class="ps-4 font-monospace text-muted"><?php echo $idx + 1; ?></td>
-                                <td class="fw-semibold text-dark"><?php echo e($it['medicine_name']); ?></td>
-                                <td><span class="badge bg-light text-muted border"><?php echo e($it['type']); ?></span></td>
+                                <td class="text-muted tabular-nums"><?php echo $idx + 1; ?></td>
+                                <td class="fw-medium"><?php echo e($it['medicine_name']); ?></td>
+                                <td><?php echo e($it['type']); ?></td>
                                 <td><?php echo e($it['dosage']); ?></td>
                                 <td><?php echo e((string)$it['duration_days']); ?> days</td>
-                                <td class="text-end pe-4 fw-medium text-success"><?php echo formatCurrency((float)$it['price']); ?></td>
+                                <td class="text-end tabular-nums"><?php echo formatCurrency((float)$it['price']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

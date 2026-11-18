@@ -26,11 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $date = trim($_POST['appointment_date'] ?? '');
 
     if ($doctorId <= 0) {
-        $errors[] = 'Please select a consulting doctor from the list.';
+        $errors[] = 'Please select a consulting doctor from the table.';
     }
 
     if (empty($date) || !strtotime($date)) {
-        $errors[] = 'Please select a valid appointment date.';
+        $errors[] = 'Please select a valid consultation date.';
     } else {
         $todayStr = date('Y-m-d');
         if ($date < $todayStr) {
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ');
         $stmtDouble->execute([$doctorId, $date, $patientId]);
         if ($stmtDouble->fetchColumn() > 0) {
-            $errors[] = 'You already have an appointment with this doctor on this date. Please choose a different date or specialist.';
+            $errors[] = 'An active appointment with this doctor already exists on this date.';
         }
 
         // 2. Check maximum 10 appointments per doctor per day
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ');
             $stmtMax->execute([$doctorId, $date]);
             if ($stmtMax->fetchColumn() >= 10) {
-                $errors[] = 'This doctor has reached the maximum appointment capacity for this date (10 patients). Please select an alternate date.';
+                $errors[] = 'Doctor capacity reached for this date (10 patients maximum). Please select another date.';
             }
         }
 
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ');
                 $stmt->execute([$patientId, $doctorId, $date]);
                 
-                setFlash('success', 'Appointment successfully confirmed for ' . formatDate($date) . '!');
+                setFlash('success', 'Appointment confirmed for ' . formatDate($date) . '.');
                 header('Location: /medicarehub/patient/my_appointments.php');
                 exit;
             } catch (Exception $e) {
@@ -80,40 +80,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Book an Appointment';
-$breadcrumbs = [
-    ['label' => 'Dashboard', 'url' => '/medicarehub/patient/dashboard.php'],
-    ['label' => 'Book Appointment', 'url' => null],
-];
+$pageTitle = 'Book Appointment';
 $loadBooking = true;
-
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="page-header">
     <div>
-        <h3 class="page-title">Book a Specialist Consultation</h3>
-        <p class="text-muted small mb-0">Follow the 3-step interactive wizard to select department, doctor, and consultation slot</p>
-    </div>
-</div>
-
-<!-- Stepper Navigation -->
-<div class="stepper mb-4 bg-white p-3 rounded-3 border">
-    <div class="step active" id="step1">
-        <i class="bi bi-1-circle me-1"></i> Specialization
-    </div>
-    <div class="step" id="step2">
-        <i class="bi bi-2-circle me-1"></i> Doctor
-    </div>
-    <div class="step" id="step3">
-        <i class="bi bi-3-circle me-1"></i> Date & Confirmation
+        <h2 class="page-title">Book appointment</h2>
+        <p class="page-description">Schedule a clinical consultation with an in-house medical specialist</p>
     </div>
 </div>
 
 <?php if (!empty($errors)): ?>
-    <div class="alert alert-danger py-3 px-4 mb-4 rounded-3" role="alert">
-        <div class="fw-semibold mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> Booking Notice:</div>
-        <ul class="mb-0 ps-3 small">
+    <div class="alert alert-danger mb-4" role="alert">
+        <ul class="mb-0 ps-3">
             <?php foreach ($errors as $err): ?>
                 <li><?php echo e($err); ?></li>
             <?php endforeach; ?>
@@ -121,52 +102,51 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
-<div class="card mb-4">
-    <div class="card-body p-4">
-        <form method="POST" action="/medicarehub/patient/book_appointment.php" id="bookingForm" class="needs-validation" novalidate>
-            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-            <input type="hidden" name="doctor_id" id="doctor_id" value="<?php echo $selectedDoctorId > 0 ? $selectedDoctorId : ''; ?>" required>
+<form method="POST" action="/medicarehub/patient/book_appointment.php" id="bookingForm" novalidate>
+    <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+    <input type="hidden" name="doctor_id" id="doctor_id" value="<?php echo $selectedDoctorId > 0 ? $selectedDoctorId : ''; ?>" required>
 
-            <!-- Step 1: Specialization -->
-            <div class="mb-4">
-                <label for="specialization" class="form-label fw-semibold">Step 1: Choose Medical Department / Specialization <span class="text-danger">*</span></label>
+    <!-- Section 1: Select specialization -->
+    <div class="booking-section">
+        <div class="booking-section-header">1. Select specialization</div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="specialization" class="form-label">Medical specialization</label>
                 <select class="form-select" id="specialization" name="specialization" required>
-                    <option value="">-- Select Medical Department --</option>
+                    <option value="">Select department or specialty</option>
                     <?php foreach ($specializations as $s): ?>
                         <option value="<?php echo e($s); ?>" <?php echo ($selectedSpecialization === $s) ? 'selected' : ''; ?>>
                             <?php echo e($s); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <small class="text-muted">Doctors available in that specialty will load automatically.</small>
+                <div class="form-text">Available doctors under this department will load below.</div>
             </div>
-
-            <!-- Step 2: Doctor Selection -->
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Step 2: Select Consulting Specialist <span class="text-danger">*</span></label>
-                <div id="doctorContainer" class="row">
-                    <div class="text-center py-4 text-muted w-100">
-                        <i class="bi bi-person-badge fs-2 d-block mb-1 text-secondary opacity-50"></i>
-                        Please select a department above to view available doctors.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 3: Date & Submit -->
-            <div class="row g-3 mb-4 pt-3 border-top">
-                <div class="col-md-6">
-                    <label for="appointment_date" class="form-label fw-semibold">Step 3: Consultation Date <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" id="appointment_date" name="appointment_date" value="<?php echo e($appointmentDate); ?>" min="<?php echo date('Y-m-d'); ?>" required>
-                    <small class="text-muted">Consultation slots are available today and onwards.</small>
-                </div>
-                <div class="col-md-6 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-medium">
-                        <i class="bi bi-calendar-check me-2"></i>Confirm & Book Appointment
-                    </button>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <!-- Section 2: Select doctor -->
+    <div class="booking-section">
+        <div class="booking-section-header">2. Select doctor</div>
+        <div id="doctorContainer">
+            <div class="empty-state">Select a specialization above to view available doctors.</div>
+        </div>
+    </div>
+
+    <!-- Section 3: Select date -->
+    <div class="booking-section">
+        <div class="booking-section-header">3. Select date</div>
+        <div class="row align-items-end g-3">
+            <div class="col-md-6">
+                <label for="appointment_date" class="form-label">Consultation date</label>
+                <input type="date" class="form-control" id="appointment_date" name="appointment_date" value="<?php echo e($appointmentDate); ?>" min="<?php echo date('Y-m-d'); ?>" required>
+                <div class="form-text">Appointments can be scheduled for today and future dates.</div>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <button type="submit" class="btn btn-primary">Book appointment</button>
+            </div>
+        </div>
+    </div>
+</form>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

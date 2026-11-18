@@ -34,97 +34,74 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $patients = $stmt->fetchAll();
 
-$pageTitle = 'My Patients';
-$breadcrumbs = [
-    ['label' => 'Dashboard', 'url' => '/medicarehub/doctor/dashboard.php'],
-    ['label' => 'My Patients', 'url' => null],
-];
-
+$pageTitle = 'Patients';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="page-header">
     <div>
-        <h3 class="page-title">Assigned Patients</h3>
-        <p class="text-muted small mb-0">List of patients who have consulted with you</p>
+        <h2 class="page-title">Assigned patients</h2>
+        <p class="page-description">Patients who have consulted with you in the clinic</p>
     </div>
 </div>
 
-<!-- Toolbar -->
+<!-- Search Toolbar -->
 <div class="card mb-4">
-    <div class="card-body p-3">
+    <div class="card-body py-3">
         <form method="GET" action="/medicarehub/doctor/patients.php" class="row g-2 align-items-center">
             <div class="col-md-5">
-                <div class="input-group">
-                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search patient name or phone..." value="<?php echo e($search); ?>">
+                <div class="search-input-group">
+                    <i class="bi bi-search" style="display: inline-block !important;"></i>
+                    <input type="text" name="search" class="form-control" placeholder="Search patient name or phone..." value="<?php echo e($search); ?>">
                 </div>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-outline-primary">Search</button>
+                <button type="submit" class="btn btn-secondary">Search</button>
                 <?php if (!empty($search)): ?>
-                    <a href="/medicarehub/doctor/patients.php" class="btn btn-outline-secondary">Clear</a>
+                    <a href="/medicarehub/doctor/patients.php" class="btn btn-secondary">Clear</a>
                 <?php endif; ?>
             </div>
             <div class="col-auto ms-auto text-muted small">
-                Unique Patients: <strong><?php echo count($patients); ?></strong>
+                Showing <?php echo count($patients); ?> patient records
             </div>
         </form>
     </div>
 </div>
 
 <!-- Patients Table -->
-<div class="card">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Visits</th>
+                <th>Last visit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($patients)): ?>
                 <tr>
-                    <th class="ps-4">Patient ID</th>
-                    <th>Patient Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Contact Phone</th>
-                    <th>Total Visits</th>
-                    <th class="pe-4">Last Visit</th>
+                    <td colspan="7" class="empty-state">No patient records found.</td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($patients)): ?>
+            <?php else: ?>
+                <?php foreach ($patients as $p): ?>
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">
-                            <i class="bi bi-people fs-1 d-block mb-2 text-secondary opacity-50"></i>
-                            No patients found in your consultation records.
-                        </td>
+                        <td class="text-muted">#<?php echo e((string)$p['patient_id']); ?></td>
+                        <td class="fw-medium"><?php echo e($p['name']); ?></td>
+                        <td><?php echo e((string)$p['age']); ?></td>
+                        <td><?php echo e($p['gender']); ?></td>
+                        <td class="tabular-nums"><?php echo e($p['phone']); ?></td>
+                        <td class="tabular-nums"><?php echo e((string)$p['visit_count']); ?></td>
+                        <td><?php echo formatDate($p['last_visit']); ?></td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($patients as $p): ?>
-                        <tr>
-                            <td class="ps-4 font-monospace text-muted">#<?php echo e((string)$p['patient_id']); ?></td>
-                            <td>
-                                <div class="fw-semibold text-dark"><?php echo e($p['name']); ?></div>
-                            </td>
-                            <td><?php echo e((string)$p['age']); ?> yrs</td>
-                            <td>
-                                <span class="badge bg-light text-dark border"><?php echo e($p['gender']); ?></span>
-                            </td>
-                            <td>
-                                <i class="bi bi-telephone text-muted me-1 small"></i>
-                                <?php echo e($p['phone']); ?>
-                            </td>
-                            <td>
-                                <span class="badge bg-primary-subtle text-primary border">
-                                    <?php echo e((string)$p['visit_count']); ?> consultations
-                                </span>
-                            </td>
-                            <td class="pe-4">
-                                <?php echo $p['last_visit'] ? formatDate($p['last_visit']) : '-'; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

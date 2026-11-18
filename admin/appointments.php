@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if ($aptId > 0) {
         $stmt = $pdo->prepare('DELETE FROM Appointment WHERE appointment_id = ?');
         $stmt->execute([$aptId]);
-        setFlash('success', 'Appointment record successfully removed.');
+        setFlash('success', 'Appointment record deleted.');
     }
     header('Location: /medicarehub/admin/appointments.php');
     exit;
@@ -57,7 +57,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $appointments = $stmt->fetchAll();
 
-$pageTitle = 'Appointments Management';
+$pageTitle = 'Appointments';
 $breadcrumbs = [
     ['label' => 'Dashboard', 'url' => '/medicarehub/admin/dashboard.php'],
     ['label' => 'Appointments', 'url' => null],
@@ -68,97 +68,89 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="page-header">
     <div>
-        <h3 class="page-title">Appointment Schedule</h3>
-        <p class="text-muted small mb-0">Overview and booking management across all clinic doctors</p>
+        <h1 class="page-title">Appointments</h1>
+        <p class="page-description">Clinic-wide appointment scheduling and consultation log</p>
     </div>
-    <a href="/medicarehub/admin/appointment_form.php" class="btn btn-primary">
-        <i class="bi bi-calendar-plus me-2"></i>New Appointment
-    </a>
+    <a href="/medicarehub/admin/appointment_form.php" class="btn btn-primary">Create appointment</a>
 </div>
 
 <!-- Toolbar -->
-<div class="card mb-4">
+<div class="card mb-3">
     <div class="card-body p-3">
         <form method="GET" action="/medicarehub/admin/appointments.php" class="row g-2 align-items-center">
             <div class="col-md-5">
-                <div class="input-group">
-                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search patient or doctor name..." value="<?php echo e($search); ?>">
+                <div class="search-input-group">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" class="form-control" placeholder="Search patient or doctor name" value="<?php echo e($search); ?>">
                 </div>
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select" onchange="this.form.submit()">
-                    <option value="">All Statuses</option>
+                    <option value="">All statuses</option>
                     <option value="Scheduled" <?php echo ($statusFilter === 'Scheduled') ? 'selected' : ''; ?>>Scheduled</option>
                     <option value="Completed" <?php echo ($statusFilter === 'Completed') ? 'selected' : ''; ?>>Completed</option>
                     <option value="Cancelled" <?php echo ($statusFilter === 'Cancelled') ? 'selected' : ''; ?>>Cancelled</option>
                 </select>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-outline-primary">Filter</button>
+                <button type="submit" class="btn btn-secondary">Filter</button>
                 <?php if (!empty($search) || !empty($statusFilter)): ?>
-                    <a href="/medicarehub/admin/appointments.php" class="btn btn-outline-secondary">Reset</a>
+                    <a href="/medicarehub/admin/appointments.php" class="btn btn-secondary">Reset</a>
                 <?php endif; ?>
             </div>
-            <div class="col-auto ms-auto text-muted small">
-                Records: <strong><?php echo $pagination['total_records']; ?></strong>
+            <div class="col-auto ms-auto text-secondary small tabular-nums">
+                Total appointments: <?php echo $pagination['total_records']; ?>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Appointments Table -->
-<div class="card">
+<div class="table-container">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table align-middle">
+            <thead>
                 <tr>
-                    <th class="ps-4">ID</th>
+                    <th style="width: 80px;">ID</th>
                     <th>Patient</th>
                     <th>Doctor</th>
                     <th>Specialization</th>
                     <th>Date</th>
                     <th>Status</th>
-                    <th class="text-end pe-4">Actions</th>
+                    <th class="text-end" style="width: 140px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($appointments)): ?>
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">
-                            <i class="bi bi-calendar-x fs-1 d-block mb-2 text-secondary opacity-50"></i>
-                            No appointments found matching current filter criteria.
-                        </td>
+                        <td colspan="7" class="text-center py-4 text-muted">No appointments found matching current criteria.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($appointments as $a): ?>
+                        <?php
+                        $badgeClass = match ($a['status']) {
+                            'Completed' => 'badge-status-completed',
+                            'Cancelled' => 'badge-status-cancelled',
+                            default     => 'badge-status-scheduled',
+                        };
+                        ?>
                         <tr>
-                            <td class="ps-4 font-monospace text-muted">#<?php echo e((string)$a['appointment_id']); ?></td>
+                            <td class="text-secondary tabular-nums">#<?php echo e((string)$a['appointment_id']); ?></td>
                             <td>
-                                <div class="fw-semibold text-dark"><?php echo e($a['patient_name']); ?></div>
-                                <small class="text-muted"><?php echo e($a['patient_phone']); ?></small>
+                                <div class="fw-medium"><?php echo e($a['patient_name']); ?></div>
+                                <div class="text-muted small tabular-nums"><?php echo e($a['patient_phone']); ?></div>
                             </td>
+                            <td class="fw-medium"><?php echo e($a['doctor_name']); ?></td>
                             <td>
-                                <div class="text-dark fw-medium"><?php echo e($a['doctor_name']); ?></div>
+                                <span class="badge badge-status badge-status-neutral"><?php echo e($a['specialization']); ?></span>
                             </td>
+                            <td class="tabular-nums"><?php echo formatDate($a['appointment_date']); ?></td>
                             <td>
-                                <span class="badge bg-light text-dark border"><?php echo e($a['specialization']); ?></span>
+                                <span class="badge <?php echo $badgeClass; ?>"><?php echo e($a['status']); ?></span>
                             </td>
-                            <td>
-                                <div><?php echo e(formatDate($a['appointment_date'])); ?></div>
-                            </td>
-                            <td>
-                                <span class="badge <?php echo getStatusBadgeClass($a['status']); ?>">
-                                    <i class="<?php echo getStatusIcon($a['status']); ?> me-1"></i><?php echo e($a['status']); ?>
-                                </span>
-                            </td>
-                            <td class="text-end pe-4">
-                                <a href="/medicarehub/admin/appointment_form.php?id=<?php echo $a['appointment_id']; ?>" class="btn btn-sm btn-action" title="Edit Appointment" data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <button type="button" class="btn btn-sm btn-action delete" title="Delete Appointment" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="/medicarehub/admin/appointments.php" data-id="<?php echo $a['appointment_id']; ?>" data-name="Appt #<?php echo $a['appointment_id']; ?> (<?php echo e($a['patient_name']); ?>)">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                            <td class="text-end">
+                                <a href="/medicarehub/admin/appointment_form.php?id=<?php echo $a['appointment_id']; ?>" class="table-action-link">Edit</a>
+                                <button type="button" class="table-action-link text-danger border-0 bg-transparent p-0" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="/medicarehub/admin/appointments.php" data-id="<?php echo $a['appointment_id']; ?>" data-name="Appointment #<?php echo $a['appointment_id']; ?>">Delete</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -168,11 +160,15 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 
     <?php if ($pagination['total_pages'] > 1): ?>
-        <div class="card-footer bg-transparent py-3">
-            <?php 
-            $queryString = http_build_query(array_filter(['search' => $search, 'status' => $statusFilter]));
-            echo renderPagination($pagination['total_pages'], $pagination['current_page'], '/medicarehub/admin/appointments.php' . (!empty($queryString) ? '?' . $queryString : '')); 
-            ?>
+        <?php
+        $queryParams = [];
+        if (!empty($search)) $queryParams['search'] = $search;
+        if (!empty($statusFilter)) $queryParams['status'] = $statusFilter;
+        $pageUrl = '/medicarehub/admin/appointments.php' . (!empty($queryParams) ? '?' . http_build_query($queryParams) : '');
+        ?>
+        <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="text-muted small tabular-nums">Showing <?php echo ($pagination['offset'] + 1); ?> to <?php echo min($pagination['offset'] + 10, $pagination['total_records']); ?> of <?php echo $pagination['total_records']; ?> records</span>
+            <?php echo renderPagination($pagination['total_pages'], $pagination['current_page'], $pageUrl); ?>
         </div>
     <?php endif; ?>
 </div>
@@ -185,29 +181,12 @@ require_once __DIR__ . '/../includes/header.php';
                 const id = this.getAttribute('data-id');
                 const name = this.getAttribute('data-name');
                 const deleteForm = document.getElementById('deleteForm');
-                
-                let idInput = deleteForm.querySelector('input[name="id"]');
-                if (!idInput) {
-                    idInput = document.createElement('input');
-                    idInput.type = 'hidden';
-                    idInput.name = 'id';
-                    deleteForm.appendChild(idInput);
-                }
-                idInput.value = id;
+                const deleteItemName = document.getElementById('deleteItemName');
+                const deleteIdInput = document.getElementById('deleteIdInput');
 
-                let actionInput = deleteForm.querySelector('input[name="action"]');
-                if (!actionInput) {
-                    actionInput = document.createElement('input');
-                    actionInput.type = 'hidden';
-                    actionInput.name = 'action';
-                    deleteForm.appendChild(actionInput);
-                }
-                actionInput.value = 'delete';
-
-                const nameDisplay = document.getElementById('deleteModalItemName');
-                if (nameDisplay && name) {
-                    nameDisplay.textContent = name;
-                }
+                if (deleteForm) deleteForm.action = this.getAttribute('data-action') || '';
+                if (deleteIdInput) deleteIdInput.value = id;
+                if (deleteItemName) deleteItemName.textContent = name ? '"' + name + '"' : 'this record';
             });
         });
     });

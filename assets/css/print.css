@@ -1,126 +1,123 @@
-/* ============================================
-   MediCare Hub – Print Styles
-   ============================================ */
+/* ============================================================
+   MediCare Hub — Monochrome A4 Clinical Print Stylesheet
+   Black and white, ruled sections, clinical accuracy
+   ============================================================ */
 
 @page {
   margin: 15mm;
-  size: A4;
+  size: A4 portrait;
 }
 
 @media print {
-  /* ---------- Hide non-printable elements ---------- */
+  /* Hide non-printable UI chrome */
   .sidebar,
-  .sidebar-overlay,
   .top-bar,
   .no-print,
   .btn,
-  .btn-primary,
-  .btn-outline-primary,
-  .btn-action,
-  .flash-message,
-  footer {
+  .breadcrumb,
+  .alert,
+  .modal,
+  header,
+  footer,
+  #sidebarToggle {
     display: none !important;
   }
 
-  /* ---------- Base ---------- */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #000000 !important;
+  }
+
   body {
     margin: 0;
     padding: 0;
-    background: #ffffff !important;
+    background: #FFFFFF !important;
     color: #000000 !important;
-    font-size: 12pt;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  /* ---------- Layout Reset ---------- */
   .main-content {
     margin-left: 0 !important;
-    padding: 0 !important;
-    min-height: auto;
-  }
-
-  .content-wrapper {
+    width: 100% !important;
     padding: 0 !important;
   }
 
-  /* ---------- Prescription Print ---------- */
-  .prescription-print {
-    max-width: 100%;
-    margin: 0;
+  .container,
+  .container-fluid,
+  .content-body {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  /* ---------- Cards ---------- */
-  .card,
-  .stat-card,
-  .report-card,
-  .table-container {
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    border: 1px solid #cccccc;
-    break-inside: avoid;
+  .card {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  /* ---------- Tables ---------- */
-  table,
+  /* Ruled Sections */
+  .print-header {
+    border-bottom: 2px solid #000000 !important;
+    padding-bottom: 12pt;
+    margin-bottom: 16pt;
+  }
+
+  .print-meta-grid {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #000000 !important;
+    padding-bottom: 12pt;
+    margin-bottom: 16pt;
+  }
+
+  /* Medicine Table */
+  table.print-table,
   .table {
-    border-collapse: collapse;
-    width: 100%;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 16pt !important;
   }
 
+  table.print-table th,
+  table.print-table td,
   .table th,
   .table td {
-    border: 1px solid #cccccc;
-    padding: 8px 12px;
+    border: 1px solid #000000 !important;
+    padding: 6pt 8pt !important;
+    font-size: 10pt !important;
+    color: #000000 !important;
   }
 
+  table.print-table th,
   .table th {
-    background-color: #f0f0f0 !important;
-    color: #000000 !important;
-    position: static;
+    font-weight: 600 !important;
+    background-color: #F0F0F0 !important;
   }
 
-  .table tbody tr:hover {
-    background-color: transparent !important;
+  /* Signature line */
+  .signature-area {
+    margin-top: 36pt;
+    display: flex;
+    justify-content: flex-end;
   }
 
-  /* ---------- Remove decorative styles ---------- */
-  * {
-    box-shadow: none !important;
-    text-shadow: none !important;
+  .signature-box {
+    width: 200pt;
+    text-align: center;
   }
 
-  /* ---------- Links ---------- */
-  a {
-    color: #000000;
-    text-decoration: underline;
-  }
-
-  /* ---------- Images ---------- */
-  img {
-    max-width: 100% !important;
-    break-inside: avoid;
-  }
-
-  /* ---------- Page breaks ---------- */
-  h2, h3, h4 {
-    break-after: avoid;
-  }
-
-  .report-card {
-    break-inside: avoid;
-  }
-
-  /* ---------- Prescription specifics ---------- */
-  .prescription-header {
-    border-bottom: 2px solid #000000;
-  }
-
-  .clinic-logo {
-    color: #000000 !important;
-  }
-
-  .signature-line {
-    border-top: 1px solid #000000;
+  .signature-rule {
+    border-top: 1px solid #000000 !important;
+    margin-bottom: 4pt;
   }
 }

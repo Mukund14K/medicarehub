@@ -34,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = trim($_POST['price'] ?? '');
 
     if (empty($name)) {
-        $errors[] = 'Medicine brand/generic name is required.';
+        $errors['name'] = 'Medicine name is required.';
     }
 
     if (empty($type)) {
-        $errors[] = 'Dosage form or type is required.';
+        $errors['type'] = 'Dosage form or type is required.';
     }
 
     if ($price === '' || !is_numeric($price) || (float)$price < 0) {
-        $errors[] = 'Price must be a valid non-negative number.';
+        $errors['price'] = 'Price must be a valid non-negative number.';
     }
 
     $medicine['medicine_name'] = $name;
@@ -59,21 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $stmt = $pdo->prepare('INSERT INTO Medicine (medicine_name, type, price) VALUES (?, ?, ?)');
                 $stmt->execute([$name, $type, $formattedPrice]);
-                setFlash('success', 'New medicine added to pharmacy inventory.');
+                setFlash('success', 'Medicine added to inventory.');
             }
             header('Location: /medicarehub/admin/medicines.php');
             exit;
         } catch (Exception $e) {
-            $errors[] = 'Database operation failed: ' . $e->getMessage();
+            $errors['db'] = 'Database operation failed: ' . $e->getMessage();
         }
     }
 }
 
-$pageTitle = $isEdit ? 'Edit Medicine' : 'Add New Medicine';
+$pageTitle = $isEdit ? 'Edit medicine' : 'Add medicine';
 $breadcrumbs = [
     ['label' => 'Dashboard', 'url' => '/medicarehub/admin/dashboard.php'],
     ['label' => 'Medicines', 'url' => '/medicarehub/admin/medicines.php'],
-    ['label' => $isEdit ? 'Edit #' . $id : 'Add New', 'url' => null],
+    ['label' => $isEdit ? 'Edit #' . $id : 'Add medicine', 'url' => null],
 ];
 
 require_once __DIR__ . '/../includes/header.php';
@@ -81,68 +81,68 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="page-header">
     <div>
-        <h3 class="page-title"><?php echo $isEdit ? 'Edit Medicine' : 'Add Medication'; ?></h3>
-        <p class="text-muted small mb-0">Define formulation, administration type, and unit dispensing cost</p>
+        <h1 class="page-title"><?php echo $isEdit ? 'Edit medicine' : 'Add medicine'; ?></h1>
+        <p class="page-description"><?php echo $isEdit ? 'Update formulation, dosage form, and unit price' : 'Add a new medication to the pharmacy catalog'; ?></p>
     </div>
-    <a href="/medicarehub/admin/medicines.php" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i>Back to Inventory
-    </a>
+    <a href="/medicarehub/admin/medicines.php" class="btn btn-secondary">Back to medicines</a>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card">
             <div class="card-body p-4">
-                <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger py-2 px-3 mb-4 rounded-3" role="alert">
-                        <div class="fw-semibold small mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Please correct the following:</div>
-                        <ul class="mb-0 ps-3 small">
-                            <?php foreach ($errors as $err): ?>
-                                <li><?php echo e($err); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+                <?php if (isset($errors['db'])): ?>
+                    <div class="alert alert-danger mb-4">
+                        <span><?php echo e($errors['db']); ?></span>
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="" class="needs-validation" novalidate>
+                <form method="POST" action="">
                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
 
-                    <div class="mb-3">
-                        <label for="medicine_name" class="form-label">Medicine Name <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-capsule"></i></span>
-                            <input type="text" class="form-control border-start-0" id="medicine_name" name="medicine_name" value="<?php echo e($medicine['medicine_name']); ?>" placeholder="e.g. Amoxicillin, Paracetamol" required autofocus>
-                        </div>
-                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Medication details</div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="medicine_name" class="form-label">Medicine name & strength</label>
+                                <input type="text" class="form-control" id="medicine_name" name="medicine_name" value="<?php echo e($medicine['medicine_name']); ?>" placeholder="e.g. Amoxicillin 500mg, Paracetamol 650mg" required autofocus>
+                                <?php if (isset($errors['name'])): ?>
+                                    <span class="form-error"><?php echo e($errors['name']); ?></span>
+                                <?php endif; ?>
+                            </div>
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label for="type" class="form-label">Dosage Type / Form <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="type" name="type" value="<?php echo e($medicine['type']); ?>" placeholder="e.g. Tablet, Capsule, Syrup, Topical" list="typeList" required>
-                            <datalist id="typeList">
-                                <option value="Tablet">
-                                <option value="Capsule">
-                                <option value="Syrup">
-                                <option value="Injection">
-                                <option value="Topical">
-                                <option value="Drops">
-                                <option value="Inhaler">
-                            </datalist>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="price" class="form-label">Unit Price (₹) <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light text-muted">₹</span>
+                            <div class="col-md-6">
+                                <label for="type" class="form-label">Dosage form</label>
+                                <input type="text" class="form-control" id="type" name="type" value="<?php echo e($medicine['type']); ?>" placeholder="e.g. Tablet, Capsule, Syrup, Topical" list="typeList" required>
+                                <datalist id="typeList">
+                                    <option value="Tablet">
+                                    <option value="Capsule">
+                                    <option value="Syrup">
+                                    <option value="Injection">
+                                    <option value="Topical Gel">
+                                    <option value="Drops">
+                                    <option value="Inhaler">
+                                </datalist>
+                                <?php if (isset($errors['type'])): ?>
+                                    <span class="form-error"><?php echo e($errors['type']); ?></span>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">Unit price (₹)</label>
                                 <input type="number" step="0.01" class="form-control" id="price" name="price" value="<?php echo e((string)$medicine['price']); ?>" min="0" placeholder="0.00" required>
+                                <?php if (isset($errors['price'])): ?>
+                                    <span class="form-error"><?php echo e($errors['price']); ?></span>
+                                <?php else: ?>
+                                    <span class="form-text">Per-unit dispensing price in INR.</span>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                        <a href="/medicarehub/admin/medicines.php" class="btn btn-light px-4">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-check-lg me-1"></i><?php echo $isEdit ? 'Save Changes' : 'Save Medicine'; ?>
-                        </button>
+                        <a href="/medicarehub/admin/medicines.php" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary"><?php echo $isEdit ? 'Save medicine' : 'Add medicine'; ?></button>
                     </div>
                 </form>
             </div>

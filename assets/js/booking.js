@@ -1,203 +1,97 @@
 /**
- * MediCare Hub - Booking Page JavaScript
- * Handles specialization-based doctor fetch, doctor selection,
- * stepper navigation, date restrictions, and form validation.
+ * MediCare Hub - Appointment Booking Script
+ * Enterprise tabular doctor selection and date validation
  */
 document.addEventListener('DOMContentLoaded', function () {
-
     const specializationSelect = document.getElementById('specialization');
     const doctorContainer = document.getElementById('doctorContainer');
     const doctorIdInput = document.getElementById('doctor_id');
-    const dateInput = document.getElementById('appointment_date');
-    const bookingForm = document.getElementById('bookingForm');
+    const appointmentDateInput = document.getElementById('appointment_date');
 
-    // ──────────────────────────────────────────────
-    // 1. Fetch Doctors on Specialization Change
-    // ──────────────────────────────────────────────
-    if (specializationSelect) {
-        specializationSelect.addEventListener('change', function () {
-            const specialization = this.value;
+    if (!specializationSelect || !doctorContainer) return;
 
-            // Clear previous selection
-            if (doctorContainer) {
-                doctorContainer.innerHTML = '';
-            }
-            if (doctorIdInput) {
-                doctorIdInput.value = '';
-            }
+    specializationSelect.addEventListener('change', function () {
+        const specialization = this.value;
 
-            if (!specialization) return;
+        // Reset doctor selection
+        if (doctorIdInput) doctorIdInput.value = '';
+        doctorContainer.innerHTML = '';
 
-            // Show loading state
-            if (doctorContainer) {
-                doctorContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Loading doctors...</p></div>';
-            }
-
-            fetch('/medicarehub/patient/get_doctors.php?specialization=' + encodeURIComponent(specialization))
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(function (doctors) {
-                    if (doctorContainer) {
-                        doctorContainer.innerHTML = '';
-                    }
-
-                    if (!doctors || doctors.length === 0) {
-                        doctorContainer.innerHTML = '<div class="text-center py-4"><p class="text-muted">No doctors available for this specialization.</p></div>';
-                        return;
-                    }
-
-                    doctors.forEach(function (doctor) {
-                        const card = createDoctorCard(doctor);
-                        doctorContainer.appendChild(card);
-                    });
-                })
-                .catch(function (error) {
-                    console.error('Error fetching doctors:', error);
-                    if (doctorContainer) {
-                        doctorContainer.innerHTML = '<div class="text-center py-4"><p class="text-danger">Failed to load doctors. Please try again.</p></div>';
-                    }
-                });
-        });
-    }
-
-    // ──────────────────────────────────────────────
-    // 2. Create Doctor Card Element
-    // ──────────────────────────────────────────────
-    function createDoctorCard(doctor) {
-        const col = document.createElement('div');
-        col.classList.add('col-md-6', 'col-lg-4', 'mb-3');
-
-        const card = document.createElement('div');
-        card.classList.add('card', 'doctor-card', 'h-100');
-        card.setAttribute('data-doctor-id', doctor.id);
-
-        card.innerHTML =
-            '<div class="card-body text-center">' +
-                '<div class="doctor-avatar mb-3">' +
-                    '<i class="bi bi-person-badge fs-1 text-primary"></i>' +
-                '</div>' +
-                '<h5 class="card-title mb-1">' + escapeHtml(doctor.name) + '</h5>' +
-                '<p class="card-text text-muted mb-3">' + escapeHtml(doctor.specialization) + '</p>' +
-                '<button type="button" class="btn btn-outline-primary btn-sm select-doctor-btn">Select</button>' +
-            '</div>';
-
-        // Handle card click / Select button click
-        card.addEventListener('click', function () {
-            selectDoctor(doctor.id, card);
-        });
-
-        return col.appendChild(card) && col;
-    }
-
-    // ──────────────────────────────────────────────
-    // 3. Select Doctor
-    // ──────────────────────────────────────────────
-    function selectDoctor(doctorId, cardElement) {
-        // Remove highlight from all doctor cards
-        const allCards = document.querySelectorAll('.doctor-card');
-        allCards.forEach(function (c) {
-            c.classList.remove('selected');
-        });
-
-        // Highlight the selected card
-        cardElement.classList.add('selected');
-
-        // Set hidden input value
-        if (doctorIdInput) {
-            doctorIdInput.value = doctorId;
+        if (!specialization) {
+            doctorContainer.innerHTML = '<div class="empty-state">Select a specialization to view available doctors.</div>';
+            return;
         }
 
-        // Advance stepper if applicable
-        updateStepper(2);
-    }
+        doctorContainer.innerHTML = '<div class="empty-state">Loading available specialists...</div>';
 
-    // ──────────────────────────────────────────────
-    // 4. Stepper Navigation
-    // ──────────────────────────────────────────────
-    function updateStepper(currentStep) {
-        const steps = document.querySelectorAll('.stepper .step');
-        steps.forEach(function (step, index) {
-            const stepNumber = index + 1;
-            step.classList.remove('active', 'completed');
-
-            if (stepNumber < currentStep) {
-                step.classList.add('completed');
-            } else if (stepNumber === currentStep) {
-                step.classList.add('active');
-            }
-        });
-    }
-
-    // Initialize stepper to step 1
-    updateStepper(1);
-
-    // ──────────────────────────────────────────────
-    // 5. Date Input – Prevent Past Dates
-    // ──────────────────────────────────────────────
-    if (dateInput) {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const minDate = year + '-' + month + '-' + day;
-
-        dateInput.setAttribute('min', minDate);
-
-        dateInput.addEventListener('change', function () {
-            if (this.value) {
-                updateStepper(3);
-            }
-        });
-    }
-
-    // ──────────────────────────────────────────────
-    // 6. Form Submit Validation
-    // ──────────────────────────────────────────────
-    if (bookingForm) {
-        bookingForm.addEventListener('submit', function (event) {
-            let isValid = true;
-            const requiredFields = bookingForm.querySelectorAll('[required]');
-
-            requiredFields.forEach(function (field) {
-                if (!field.value || field.value.trim() === '') {
-                    isValid = false;
-                    field.classList.add('is-invalid');
-                } else {
-                    field.classList.remove('is-invalid');
+        fetch('/medicarehub/patient/get_doctors.php?specialization=' + encodeURIComponent(specialization))
+            .then(response => {
+                if (!response.ok) throw new Error('Network error');
+                return response.json();
+            })
+            .then(doctors => {
+                if (!doctors || doctors.length === 0) {
+                    doctorContainer.innerHTML = '<div class="empty-state">No doctors currently registered under this specialization.</div>';
+                    return;
                 }
+
+                let html = '<div class="table-container"><table class="table">';
+                html += '<thead><tr><th>Doctor name</th><th>Specialization</th><th>Phone</th><th class="text-end">Action</th></tr></thead>';
+                html += '<tbody>';
+
+                doctors.forEach(doc => {
+                    html += `<tr id="doctor-row-${doc.id}">
+                        <td class="fw-medium">${escapeHtml(doc.name)}</td>
+                        <td>${escapeHtml(doc.specialization)}</td>
+                        <td class="tabular-nums">${escapeHtml(doc.phone)}</td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-secondary btn-sm select-btn" data-id="${doc.id}" data-name="${escapeHtml(doc.name)}">Select</button>
+                        </td>
+                    </tr>`;
+                });
+
+                html += '</tbody></table></div>';
+                doctorContainer.innerHTML = html;
+
+                // Bind selection click
+                const buttons = doctorContainer.querySelectorAll('.select-btn');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const id = this.getAttribute('data-id');
+                        doctorIdInput.value = id;
+
+                        // Reset all rows & buttons
+                        doctorContainer.querySelectorAll('tbody tr').forEach(r => r.classList.remove('table-selected'));
+                        buttons.forEach(b => {
+                            b.textContent = 'Select';
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-secondary');
+                        });
+
+                        // Highlight selected
+                        const row = document.getElementById('doctor-row-' + id);
+                        if (row) row.classList.add('table-selected');
+                        this.textContent = 'Selected';
+                        this.classList.remove('btn-secondary');
+                        this.classList.add('btn-primary');
+                    });
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                doctorContainer.innerHTML = '<div class="empty-state text-danger">Failed to load specialists. Please try again.</div>';
             });
+    });
 
-            // Check hidden doctor_id
-            if (doctorIdInput && (!doctorIdInput.value || doctorIdInput.value.trim() === '')) {
-                isValid = false;
-                if (doctorContainer) {
-                    doctorContainer.classList.add('border', 'border-danger', 'rounded', 'p-2');
-                }
-                alert('Please select a doctor before booking.');
-            } else if (doctorContainer) {
-                doctorContainer.classList.remove('border', 'border-danger', 'rounded', 'p-2');
-            }
-
-            if (!isValid) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-            bookingForm.classList.add('was-validated');
-        });
-    }
-
-    // ──────────────────────────────────────────────
-    // Utility: Escape HTML to prevent XSS
-    // ──────────────────────────────────────────────
     function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(text));
-        return div.innerHTML;
+        if (!text) return '';
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return String(text).replace(/[&<>"']/g, m => map[m]);
     }
-
 });

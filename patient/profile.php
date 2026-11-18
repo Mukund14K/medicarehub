@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update session display name
             $_SESSION['user_name'] = $name;
 
-            setFlash('success', 'Your personal profile has been successfully updated.');
+            setFlash('success', 'Profile updated successfully.');
             header('Location: /medicarehub/patient/profile.php');
             exit;
         } catch (Exception $e) {
@@ -70,34 +70,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'My Profile';
-$breadcrumbs = [
-    ['label' => 'Dashboard', 'url' => '/medicarehub/patient/dashboard.php'],
-    ['label' => 'Profile', 'url' => null],
-];
-
+$pageTitle = 'Profile';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="page-header">
     <div>
-        <h3 class="page-title">Personal Patient Profile</h3>
-        <p class="text-muted small mb-0">Update your clinical demographics and contact coordinates</p>
+        <h2 class="page-title">Personal profile</h2>
+        <p class="page-description">Registered demographics and contact details</p>
     </div>
 </div>
 
-<div class="row justify-content-center">
+<div class="row">
     <div class="col-lg-8">
         <div class="card">
-            <div class="card-header bg-white py-3 px-4">
-                <h5 class="fw-semibold mb-0">Edit Profile Details</h5>
-                <small class="text-muted">Username: <strong><?php echo e($_SESSION['username'] ?? ''); ?></strong> (System login)</small>
+            <div class="card-header">
+                <div>Account details</div>
+                <span class="small text-muted">Username: <strong><?php echo e($_SESSION['username'] ?? ''); ?></strong></span>
             </div>
-            <div class="card-body p-4">
+            <div class="card-body">
                 <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger py-2 px-3 mb-4 rounded-3" role="alert">
-                        <div class="fw-semibold small mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Please correct the following:</div>
-                        <ul class="mb-0 ps-3 small">
+                    <div class="alert alert-danger mb-4" role="alert">
+                        <ul class="mb-0 ps-3">
                             <?php foreach ($errors as $err): ?>
                                 <li><?php echo e($err); ?></li>
                             <?php endforeach; ?>
@@ -105,24 +99,21 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="/medicarehub/patient/profile.php" class="needs-validation" novalidate>
+                <form method="POST" action="/medicarehub/patient/profile.php" novalidate>
                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
-                            <input type="text" class="form-control border-start-0" id="name" name="name" value="<?php echo e($patient['name']); ?>" required>
-                        </div>
+                        <label for="name" class="form-label">Full name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="<?php echo e($patient['name']); ?>" required>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label for="age" class="form-label">Age (years) <span class="text-danger">*</span></label>
+                            <label for="age" class="form-label">Age</label>
                             <input type="number" class="form-control" id="age" name="age" value="<?php echo e((string)$patient['age']); ?>" min="0" max="150" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                            <label for="gender" class="form-label">Gender</label>
                             <select class="form-select" id="gender" name="gender" required>
                                 <option value="Male" <?php echo ($patient['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
                                 <option value="Female" <?php echo ($patient['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
@@ -132,18 +123,13 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
 
                     <div class="mb-4">
-                        <label for="phone" class="form-label">Phone Number (10 digits) <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-telephone"></i></span>
-                            <input type="tel" class="form-control border-start-0" id="phone" name="phone" value="<?php echo e($patient['phone']); ?>" pattern="[0-9]{10}" maxlength="10" required>
-                        </div>
+                        <label for="phone" class="form-label">Phone number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo e($patient['phone']); ?>" pattern="[0-9]{10}" maxlength="10" required>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                        <a href="/medicarehub/patient/dashboard.php" class="btn btn-light px-4">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-check-lg me-1"></i>Save Changes
-                        </button>
+                        <a href="/medicarehub/patient/dashboard.php" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save profile</button>
                     </div>
                 </form>
             </div>
