@@ -142,7 +142,7 @@ require_once __DIR__ . '/../includes/header.php';
                             </td>
                             <td class="fw-medium"><?php echo e($a['doctor_name']); ?></td>
                             <td>
-                                <span class="badge badge-status badge-status-neutral"><?php echo e($a['specialization']); ?></span>
+                                <?php echo e($a['specialization']); ?>
                             </td>
                             <td class="tabular-nums"><?php echo formatDate($a['appointment_date']); ?></td>
                             <td>

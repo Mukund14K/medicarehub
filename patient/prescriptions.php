@@ -54,7 +54,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="page-header">
     <div>
-        <h2 class="page-title">Prescriptions</h2>
+        <h1 class="page-title">Prescriptions</h1>
         <p class="page-description">Archived medication records and printable consultation slips</p>
     </div>
 </div>
@@ -73,37 +73,37 @@ require_once __DIR__ . '/../includes/header.php';
         $total = $block['total'];
         ?>
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3">
                 <div>
-                    <div>Consultation with <?php echo e($apt['doctor_name']); ?> (<?php echo e($apt['specialization']); ?>)</div>
-                    <div class="small text-muted font-normal">Date: <?php echo formatDate($apt['appointment_date']); ?> &middot; Rx #RX-<?php echo str_pad((string)$apt['appointment_id'], 5, '0', STR_PAD_LEFT); ?></div>
+                    <div class="fw-semibold text-dark fs-6">Consultation with <?php echo e($apt['doctor_name']); ?> <span class="text-secondary fw-normal">(<?php echo e($apt['specialization']); ?>)</span></div>
+                    <div class="small text-muted mt-1">Date: <?php echo formatDate($apt['appointment_date']); ?> &middot; Rx #RX-<?php echo str_pad((string)$apt['appointment_id'], 5, '0', STR_PAD_LEFT); ?></div>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="small text-muted">Estimated total: <strong class="text-dark tabular-nums"><?php echo formatCurrency($total); ?></strong></span>
+                    <span class="small text-secondary">Estimated total: <strong class="text-dark tabular-nums"><?php echo formatCurrency($total); ?></strong></span>
                     <a href="/medicarehub/patient/prescription_print.php?appointment_id=<?php echo $apt['appointment_id']; ?>" target="_blank" class="btn btn-secondary btn-sm">Print slip</a>
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table">
+                <table class="table align-middle">
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>Medicine name</th>
-                            <th>Form</th>
+                            <th style="width: 25%;">Medicine name</th>
+                            <th style="width: 15%;">Form</th>
                             <th>Dosage instructions</th>
-                            <th>Duration</th>
-                            <th class="text-end">Unit price</th>
+                            <th style="width: 15%;">Duration</th>
+                            <th class="text-end" style="width: 120px;">Unit price</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($items as $idx => $it): ?>
                             <tr>
-                                <td class="text-muted tabular-nums"><?php echo $idx + 1; ?></td>
+                                <td class="text-muted tabular-nums">#<?php echo $idx + 1; ?></td>
                                 <td class="fw-medium"><?php echo e($it['medicine_name']); ?></td>
                                 <td><?php echo e($it['type']); ?></td>
                                 <td><?php echo e($it['dosage']); ?></td>
-                                <td><?php echo e((string)$it['duration_days']); ?> days</td>
-                                <td class="text-end tabular-nums"><?php echo formatCurrency((float)$it['price']); ?></td>
+                                <td class="tabular-nums"><?php echo e((string)$it['duration_days']); ?> days</td>
+                                <td class="text-end tabular-nums fw-medium"><?php echo formatCurrency((float)$it['price']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

@@ -676,54 +676,66 @@ textarea.form-control {
   text-decoration: underline;
 }
 
-/* ---------- Status Badges (Clinical Muted Palette) ---------- */
+/* ---------- Status Indicators (Text Only - No Box or Pill) ---------- */
 .badge,
 .badge-status {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.4;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  white-space: nowrap;
-  text-transform: capitalize;
+  display: inline-block !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background-color: transparent !important;
+  background: none !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+  text-transform: capitalize !important;
 }
 
 .badge-status-completed,
-.badge.bg-success {
-  background-color: var(--status-success-bg) !important;
+.badge.bg-success,
+.badge.text-bg-success {
+  background-color: transparent !important;
+  background: none !important;
   color: var(--status-success) !important;
-  border-color: #C8E2D5 !important;
+  border: none !important;
 }
 
 .badge-status-scheduled,
-.badge.bg-primary {
-  background-color: var(--status-neutral-bg) !important;
-  color: var(--status-neutral) !important;
-  border-color: #D1D5DB !important;
+.badge.bg-primary,
+.badge.text-bg-primary {
+  background-color: transparent !important;
+  background: none !important;
+  color: var(--accent) !important;
+  border: none !important;
 }
 
 .badge-status-cancelled,
-.badge.bg-danger {
-  background-color: var(--status-danger-bg) !important;
+.badge.bg-danger,
+.badge.text-bg-danger {
+  background-color: transparent !important;
+  background: none !important;
   color: var(--status-danger) !important;
-  border-color: #F3C8C8 !important;
+  border: none !important;
 }
 
 .badge-status-neutral,
 .badge.bg-secondary,
-.badge.bg-info {
-  background-color: var(--status-neutral-bg) !important;
-  color: var(--status-neutral) !important;
-  border-color: #D1D5DB !important;
+.badge.bg-info,
+.badge.text-bg-secondary {
+  background-color: transparent !important;
+  background: none !important;
+  color: var(--text-secondary) !important;
+  border: none !important;
 }
 
-.badge.bg-warning {
-  background-color: var(--status-warning-bg) !important;
+.badge.bg-warning,
+.badge.text-bg-warning {
+  background-color: transparent !important;
+  background: none !important;
   color: var(--status-warning) !important;
-  border-color: #F3E0B5 !important;
+  border: none !important;
 }
 
 /* ---------- Alerts & Flash Messages ---------- */

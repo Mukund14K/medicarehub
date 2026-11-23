@@ -21,8 +21,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Enterprise Custom CSS -->
-    <link href="/medicarehub/assets/css/style.css" rel="stylesheet">
+    <!-- Enterprise Custom CSS with cache busting -->
+    <link href="/medicarehub/assets/css/style.css?v=<?php echo file_exists(__DIR__ . '/../assets/css/style.css') ? filemtime(__DIR__ . '/../assets/css/style.css') : time(); ?>" rel="stylesheet">
 
     <?php if (isset($isPrintPage) && $isPrintPage): ?>
     <!-- Print CSS -->
@@ -68,12 +68,17 @@ if (!$userRole) {
                     <i class="bi bi-list" style="display: inline-block !important; font-size: 18px;"></i>
                 </button>
 
-                <h1 class="top-bar-title"><?php echo htmlspecialchars($pageTitle ?? 'MediCare Hub'); ?></h1>
+                <div class="top-bar-breadcrumb d-flex align-items-center gap-2">
+                    <span class="text-secondary small">MediCare Hub</span>
+                    <span class="text-muted small">/</span>
+                    <span class="fw-semibold text-dark small"><?php echo htmlspecialchars($pageTitle ?? 'Portal'); ?></span>
+                </div>
             </div>
 
             <div class="top-bar-meta">
                 <?php if (isset($_SESSION['user_name'])): ?>
                     <span class="top-bar-user"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                    <span class="text-muted small d-none d-sm-inline">&bull;</span>
                 <?php endif; ?>
                 <span class="top-bar-date d-none d-sm-inline"><?php echo date('d M Y'); ?></span>
             </div>

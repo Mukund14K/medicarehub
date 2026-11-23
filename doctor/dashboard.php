@@ -106,7 +106,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="card mb-4">
     <div class="card-header">
         <div>Today's consultation queue</div>
-        <span class="badge bg-secondary">Today (<?php echo count($todayAppointments); ?>)</span>
+        <span class="text-secondary small">Today (<?php echo count($todayAppointments); ?>)</span>
     </div>
     <div class="table-responsive">
         <table class="table">

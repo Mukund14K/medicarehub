@@ -134,7 +134,7 @@ require_once __DIR__ . '/../includes/header.php';
                         </td>
                         <td>
                             <?php if ($a['prescription_count'] > 0): ?>
-                                <span class="badge bg-secondary"><?php echo $a['prescription_count']; ?> meds</span>
+                                <span class="text-secondary"><?php echo $a['prescription_count']; ?> meds</span>
                             <?php else: ?>
                                 <span class="text-muted small">None</span>
                             <?php endif; ?>

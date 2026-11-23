@@ -100,7 +100,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <td class="text-secondary tabular-nums">#<?php echo e((string)$m['medicine_id']); ?></td>
                             <td class="fw-medium"><?php echo e($m['medicine_name']); ?></td>
                             <td>
-                                <span class="badge badge-status badge-status-neutral"><?php echo e($m['type']); ?></span>
+                                <?php echo e($m['type']); ?>
                             </td>
                             <td class="tabular-nums fw-medium">
                                 <?php echo formatCurrency((float)$m['price']); ?>

@@ -102,7 +102,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <td class="fw-medium"><?php echo e($p['name']); ?></td>
                             <td class="tabular-nums"><?php echo e((string)$p['age']); ?> yrs</td>
                             <td>
-                                <span class="badge badge-status badge-status-neutral"><?php echo e($p['gender']); ?></span>
+                                <?php echo e($p['gender']); ?>
                             </td>
                             <td class="tabular-nums"><?php echo e($p['phone']); ?></td>
                             <td class="text-end">

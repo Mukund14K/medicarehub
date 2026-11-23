@@ -107,7 +107,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <td class="text-secondary tabular-nums">#<?php echo e((string)$d['doctor_id']); ?></td>
                             <td class="fw-medium"><?php echo e($d['name']); ?></td>
                             <td>
-                                <span class="badge badge-status badge-status-neutral"><?php echo e($d['specialization']); ?></span>
+                                <?php echo e($d['specialization']); ?>
                             </td>
                             <td class="tabular-nums"><?php echo e($d['phone']); ?></td>
                             <td class="tabular-nums"><?php echo e((string)$d['total_appointments']); ?></td>

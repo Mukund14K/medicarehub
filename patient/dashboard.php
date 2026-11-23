@@ -181,7 +181,7 @@ require_once __DIR__ . '/../includes/header.php';
                             </td>
                             <td>
                                 <?php if ($h['rx_count'] > 0): ?>
-                                    <span class="badge bg-secondary"><?php echo $h['rx_count']; ?> medicines</span>
+                                    <span class="text-secondary"><?php echo $h['rx_count']; ?> medicines</span>
                                 <?php else: ?>
                                     <span class="text-muted small">None</span>
                                 <?php endif; ?>
