@@ -128,7 +128,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <td class="tabular-nums"><?php echo e($a['phone']); ?></td>
                         <td><?php echo formatDate($a['appointment_date']); ?></td>
                         <td>
-                            <span class="badge <?php echo getStatusBadgeClass($a['status']); ?>">
+                            <span class="<?php echo getStatusBadgeClass($a['status']); ?>">
                                 <?php echo e($a['status']); ?>
                             </span>
                         </td>

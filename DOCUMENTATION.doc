@@ -1,0 +1,416 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+    <meta charset="utf-8">
+    <title>MediCare Hub — Codebase & Database Documentation</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>100</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+        body {
+            font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #1B2430;
+            background-color: #FFFFFF;
+            margin: 24pt;
+        }
+        h1 {
+            color: #7A1C28;
+            font-size: 20pt;
+            border-bottom: 2pt solid #7A1C28;
+            padding-bottom: 4pt;
+            margin-top: 0;
+            margin-bottom: 12pt;
+        }
+        h2 {
+            color: #7A1C28;
+            font-size: 14pt;
+            border-bottom: 1pt solid #DADFE6;
+            padding-bottom: 3pt;
+            margin-top: 18pt;
+            margin-bottom: 8pt;
+        }
+        h3 {
+            color: #1B2430;
+            font-size: 12pt;
+            margin-top: 12pt;
+            margin-bottom: 4pt;
+        }
+        p {
+            margin: 0 0 8pt 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16pt;
+            font-size: 10pt;
+        }
+        th {
+            background-color: #F8EDEF;
+            color: #7A1C28;
+            font-weight: 600;
+            text-align: left;
+            padding: 6pt 8pt;
+            border: 1pt solid #DADFE6;
+        }
+        td {
+            padding: 6pt 8pt;
+            border: 1pt solid #DADFE6;
+            vertical-align: top;
+        }
+        tr:nth-child(even) td {
+            background-color: #FAFAFC;
+        }
+        code, .code-span {
+            font-family: Consolas, 'Courier New', monospace;
+            background-color: #F5F6F8;
+            padding: 1pt 3pt;
+            border-radius: 2pt;
+            font-size: 9.5pt;
+            color: #1B2430;
+        }
+        .header-meta {
+            color: #5B6675;
+            font-size: 10pt;
+            margin-bottom: 16pt;
+        }
+        .section-box {
+            background-color: #F5F6F8;
+            border-left: 3pt solid #7A1C28;
+            padding: 8pt 12pt;
+            margin-bottom: 12pt;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MediCare Hub — Codebase &amp; Database Documentation</h1>
+    <div class="header-meta">
+        <strong>Project:</strong> MediCare Hub Clinic Management System &nbsp;|&nbsp; 
+        <strong>Technology:</strong> PHP 8 (PDO), MySQL/MariaDB, IBM Plex Sans, Vanilla JavaScript &nbsp;|&nbsp;
+        <strong>Theme:</strong> Enterprise Clinical Maroon (<code>#7A1C28</code>)
+    </div>
+
+    <div class="section-box">
+        <p><strong>System Purpose:</strong> MediCare Hub is a production-ready clinic operations platform providing specialized role-governed workflows for Clinic Administrators, Consulting Physicians, and Patients with appointment booking, itemized digital prescription generation, pharmacy catalog tracking, and relational SQL reporting.</p>
+    </div>
+
+    <h2>1. Relational Database Architecture (clinic_db)</h2>
+    <p>The database consists of <strong>6 normalized tables</strong> enforcing foreign key referential integrity with cascading deletions (<code>ON DELETE CASCADE</code>) to guarantee complete data consistency.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 18%;">Table Name</th>
+                <th style="width: 32%;">Primary Key &amp; Foreign Keys</th>
+                <th style="width: 50%;">Description &amp; Key Attributes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Patient</strong></td>
+                <td><code>patient_id</code> (PK, Auto-Inc)</td>
+                <td>Stores demographic profiles: <code>name</code>, <code>age</code>, <code>gender</code> (Male/Female/Other), and 10-digit mobile <code>phone</code>.</td>
+            </tr>
+            <tr>
+                <td><strong>Doctor</strong></td>
+                <td><code>doctor_id</code> (PK, Auto-Inc)</td>
+                <td>Medical specialists roster: <code>name</code>, medical <code>specialization</code> (Cardiology, Dermatology, Orthopedics, Pediatrics, Neurology), and direct clinic <code>phone</code>.</td>
+            </tr>
+            <tr>
+                <td><strong>Medicine</strong></td>
+                <td><code>medicine_id</code> (PK, Auto-Inc)</td>
+                <td>Pharmacy catalog containing drug formulation with strength (<code>medicine_name</code>), administration dosage <code>type</code> (Tablet, Capsule, Syrup, Topical Gel), and dispensing <code>price</code> in INR.</td>
+            </tr>
+            <tr>
+                <td><strong>Appointment</strong></td>
+                <td>
+                    <code>appointment_id</code> (PK, Auto-Inc)<br>
+                    <code>patient_id</code> (FK &rarr; Patient)<br>
+                    <code>doctor_id</code> (FK &rarr; Doctor)
+                </td>
+                <td>Connects a registered patient with a specialist doctor on a specified <code>appointment_date</code> with workflow <code>status</code> (Scheduled, Completed, Cancelled).</td>
+            </tr>
+            <tr>
+                <td><strong>Prescription</strong></td>
+                <td>
+                    <code>prescription_id</code> (PK, Auto-Inc)<br>
+                    <code>appointment_id</code> (FK &rarr; Appointment)<br>
+                    <code>medicine_id</code> (FK &rarr; Medicine)
+                </td>
+                <td>Itemized clinical prescriptions linking consultation visits to dispensed drugs with specific administration <code>dosage</code> and course <code>duration_days</code>.</td>
+            </tr>
+            <tr>
+                <td><strong>Users</strong></td>
+                <td>
+                    <code>user_id</code> (PK, Auto-Inc)<br>
+                    <code>patient_id</code> (FK NULL)<br>
+                    <code>doctor_id</code> (FK NULL)
+                </td>
+                <td>Authentication credentials: unique <code>username</code>, secure bcrypt <code>password_hash</code>, and access governance <code>role</code> (admin, doctor, patient).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Complete Code File Explanations</h2>
+
+    <h3>Root Files &amp; Authentication</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">File Path</th>
+                <th style="width: 75%;">Short Description &amp; Technical Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>index.php</code></td>
+                <td>Entry route router. Evaluates session state and automatically forwards logged-in users to their respective role dashboard, or guests to <code>login.php</code>.</td>
+            </tr>
+            <tr>
+                <td><code>login.php</code></td>
+                <td>Single-card clinical authentication screen. Validates credentials using PHP's native <code>password_verify()</code> with bcrypt and displays demo login credentials.</td>
+            </tr>
+            <tr>
+                <td><code>register.php</code></td>
+                <td>Patient self-service onboarding portal. Atomically inserts the patient's demographic record and user login credentials within a database transaction.</td>
+            </tr>
+            <tr>
+                <td><code>logout.php</code></td>
+                <td>Session termination script. Unsets session variables, destroys session storage, clears cookies, and redirects safely to the login screen.</td>
+            </tr>
+            <tr>
+                <td><code>database.sql</code></td>
+                <td>Master database setup script. Contains complete DDL schema definition and realistic pre-seeded Indian clinical data.</td>
+            </tr>
+            <tr>
+                <td><code>README.md</code></td>
+                <td>Project documentation and setup guide containing system architecture details, demo credentials, and installation steps.</td>
+            </tr>
+            <tr>
+                <td><code>DOCUMENTATION.md</code></td>
+                <td>Structured markdown reference documenting each source file and the database schema.</td>
+            </tr>
+            <tr>
+                <td><code>DOCUMENTATION.doc</code></td>
+                <td>Microsoft Word compatible document providing comprehensive technical explanations of the codebase and database.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Configuration &amp; Shared Includes (config/ &amp; includes/)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">File Path</th>
+                <th style="width: 75%;">Short Description &amp; Technical Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>config/db.php</code></td>
+                <td>Singleton PDO connection establishing communication with MySQL on port 3308 with UTF-8 character encoding and exception-driven error handling.</td>
+            </tr>
+            <tr>
+                <td><code>includes/auth.php</code></td>
+                <td>Authentication engine managing role-based route guardrails (<code>requireRole()</code>), CSRF token generation/verification, and flash messages.</td>
+            </tr>
+            <tr>
+                <td><code>includes/functions.php</code></td>
+                <td>Core helper library with XSS sanitization (<code>e()</code>), server-side pagination, CSV export generator, and date/currency formatters.</td>
+            </tr>
+            <tr>
+                <td><code>includes/header.php</code></td>
+                <td>Global HTML header importing IBM Plex Sans typography, cache-busting CSS links, and top bar with breadcrumbs and user metadata.</td>
+            </tr>
+            <tr>
+                <td><code>includes/footer.php</code></td>
+                <td>Global layout footer rendering closing tags, Bootstrap JavaScript bundles, and the universal record deletion confirmation modal.</td>
+            </tr>
+            <tr>
+                <td><code>includes/sidebar_admin.php</code></td>
+                <td>240px administration drawer featuring section headers (OVERVIEW, MANAGEMENT, REPORTS), outline icons, and user signout link.</td>
+            </tr>
+            <tr>
+                <td><code>includes/sidebar_doctor.php</code></td>
+                <td>Doctor's navigation drawer providing direct shortcuts to patient consultation queues, appointments, and patient lists.</td>
+            </tr>
+            <tr>
+                <td><code>includes/sidebar_patient.php</code></td>
+                <td>Patient navigation sidebar linking to personal dashboard, appointment booking stepper, visit history, prescriptions, and profile.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Administration Module (admin/)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">File Path</th>
+                <th style="width: 75%;">Short Description &amp; Technical Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>admin/dashboard.php</code></td>
+                <td>Administrative dashboard with 4 metric stat cards, Chart.js specialist appointments bar chart, status breakdown, and recent consultations.</td>
+            </tr>
+            <tr>
+                <td><code>admin/patients.php</code></td>
+                <td>Master patient directory supporting live name/phone search, server pagination, and edit/delete actions.</td>
+            </tr>
+            <tr>
+                <td><code>admin/patient_form.php</code></td>
+                <td>Demographic form for registering new patients or editing existing profiles with full field validation.</td>
+            </tr>
+            <tr>
+                <td><code>admin/doctors.php</code></td>
+                <td>Specialist staff roster listing doctors, medical departments, direct phone numbers, and consultation totals.</td>
+            </tr>
+            <tr>
+                <td><code>admin/doctor_form.php</code></td>
+                <td>Doctor editor form for creating and updating specialist staff records and clinical departments.</td>
+            </tr>
+            <tr>
+                <td><code>admin/medicines.php</code></td>
+                <td>Pharmacy catalog displaying medication inventory, dosage forms, unit dispensing prices, and search tools.</td>
+            </tr>
+            <tr>
+                <td><code>admin/medicine_form.php</code></td>
+                <td>Form for adding or editing pharmaceutical products, formulation types, and unit dispensing prices.</td>
+            </tr>
+            <tr>
+                <td><code>admin/appointments.php</code></td>
+                <td>Master appointment schedule featuring doctor/patient search, status dropdown filters, and rescheduling tools.</td>
+            </tr>
+            <tr>
+                <td><code>admin/appointment_form.php</code></td>
+                <td>Appointment creation and editing form linking patients and physicians with date selection and status tracking.</td>
+            </tr>
+            <tr>
+                <td><code>admin/reports.php</code></td>
+                <td>Relational SQL reporting engine supporting 5 specialized queries (a through e) with monospace query inspection and CSV export.</td>
+            </tr>
+            <tr>
+                <td><code>admin/export_csv.php</code></td>
+                <td>Data streaming endpoint that executes the selected report query and streams an RFC 4180 CSV file to the browser.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Doctor Module (doctor/)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">File Path</th>
+                <th style="width: 75%;">Short Description &amp; Technical Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>doctor/dashboard.php</code></td>
+                <td>Physician's workbench displaying today's patient queue, 7-day upcoming bookings, and quick consultation completion handler.</td>
+            </tr>
+            <tr>
+                <td><code>doctor/appointments.php</code></td>
+                <td>Doctor's consultation log with patient search, status filters, demographic summary, and one-click consultation completion.</td>
+            </tr>
+            <tr>
+                <td><code>doctor/patients.php</code></td>
+                <td>Assigned patient cohort table displaying all individuals who have booked consultations with the signed-in doctor.</td>
+            </tr>
+            <tr>
+                <td><code>doctor/prescription_form.php</code></td>
+                <td>Interactive digital prescription builder supporting itemized drug selection, dosage/duration entry, and live cost calculation.</td>
+            </tr>
+            <tr>
+                <td><code>doctor/prescription_print.php</code></td>
+                <td>Monochrome clinical Rx slip formatted for A4 printing with clinic letterhead, itemized medications, and doctor's signature line.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Patient Module (patient/)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">File Path</th>
+                <th style="width: 75%;">Short Description &amp; Technical Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>patient/dashboard.php</code></td>
+                <td>Patient portal showing confirmed upcoming visits, consultation history, assigned doctor profiles, and quick booking shortcuts.</td>
+            </tr>
+            <tr>
+                <td><code>patient/book_appointment.php</code></td>
+                <td>3-step structured booking flow (select specialization &rarr; select doctor from table &rarr; select date with past-date checks).</td>
+            </tr>
+            <tr>
+                <td><code>patient/get_doctors.php</code></td>
+                <td>AJAX JSON endpoint returning active doctors filtered by the user's selected specialization.</td>
+            </tr>
+            <tr>
+                <td><code>patient/my_appointments.php</code></td>
+                <td>Patient's appointment history with cancellation controls for upcoming visits and direct links to prescription slips.</td>
+            </tr>
+            <tr>
+                <td><code>patient/prescriptions.php</code></td>
+                <td>Chronological prescription repository displaying prescribed medications, administration instructions, and slip links.</td>
+            </tr>
+            <tr>
+                <td><code>patient/prescription_print.php</code></td>
+                <td>Patient-accessible printable prescription slip identical to the doctor's official clinic format.</td>
+            </tr>
+            <tr>
+                <td><code>patient/profile.php</code></td>
+                <td>Self-service demographic profile editor for patients to maintain updated contact phone numbers and age.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Frontend Assets (assets/)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">File Path</th>
+                <th style="width: 75%;">Short Description &amp; Technical Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>assets/css/style.css</code></td>
+                <td>Enterprise design system stylesheet; defines IBM Plex Sans, clinical maroon theme (<code>#7A1C28</code>), 4px radius, and unboxed text statuses.</td>
+            </tr>
+            <tr>
+                <td><code>assets/css/print.css</code></td>
+                <td>Print-only stylesheet hiding navigation bars, toolbars, and buttons for clean black-and-white physical document printing.</td>
+            </tr>
+            <tr>
+                <td><code>assets/js/app.js</code></td>
+                <td>UI script handling mobile sidebar offcanvas toggling, global delete modal parameter binding, and alert dismissals.</td>
+            </tr>
+            <tr>
+                <td><code>assets/js/booking.js</code></td>
+                <td>Client-side AJAX script powering the 3-step patient appointment booking flow and physician table selection.</td>
+            </tr>
+            <tr>
+                <td><code>assets/js/charts.js</code></td>
+                <td>Flat Chart.js chart engine rendering the monochrome maroon specialist bar chart and consultation status breakdown.</td>
+            </tr>
+            <tr>
+                <td><code>assets/img/logo.svg</code></td>
+                <td>Clean monochrome SVG medical cross mark styled with the clinical maroon accent color.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

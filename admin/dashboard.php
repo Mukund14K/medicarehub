@@ -159,7 +159,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <td><?php echo e($apt['specialization']); ?></td>
                             <td><?php echo e(formatDate($apt['appointment_date'])); ?></td>
                             <td>
-                                <span class="badge <?php echo getStatusBadgeClass($apt['status']); ?>">
+                                <span class="<?php echo getStatusBadgeClass($apt['status']); ?>">
                                     <?php echo e($apt['status']); ?>
                                 </span>
                             </td>

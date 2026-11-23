@@ -15,9 +15,9 @@
   --text-secondary: #5B6675;
   --text-muted: #8791A0;
 
-  --accent: #1F4E79;
-  --accent-hover: #173B5C;
-  --accent-subtle: #EAF0F6;
+  --accent: #7A1C28;
+  --accent-hover: #5F151F;
+  --accent-subtle: #F8EDEF;
 
   --status-success: #2E6B4F;
   --status-success-bg: #EAF3EE;
@@ -571,7 +571,7 @@ textarea.form-control {
 .form-control:focus,
 .form-select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(31, 78, 121, 0.25) !important;
+  box-shadow: 0 0 0 2px rgba(122, 28, 40, 0.25) !important;
   background-color: var(--surface);
   color: var(--text);
 }
@@ -677,6 +677,8 @@ textarea.form-control {
 }
 
 /* ---------- Status Indicators (Text Only - No Box or Pill) ---------- */
+.status-indicator,
+.status-text,
 .badge,
 .badge-status {
   display: inline-block !important;
@@ -687,53 +689,58 @@ textarea.form-control {
   border-radius: 0 !important;
   border: none !important;
   background-color: transparent !important;
-  background: none !important;
+  background: transparent !important;
   box-shadow: none !important;
   white-space: nowrap !important;
   text-transform: capitalize !important;
 }
 
+.status-completed,
 .badge-status-completed,
 .badge.bg-success,
 .badge.text-bg-success {
   background-color: transparent !important;
-  background: none !important;
+  background: transparent !important;
   color: var(--status-success) !important;
   border: none !important;
 }
 
+.status-scheduled,
 .badge-status-scheduled,
 .badge.bg-primary,
 .badge.text-bg-primary {
   background-color: transparent !important;
-  background: none !important;
+  background: transparent !important;
   color: var(--accent) !important;
   border: none !important;
 }
 
+.status-cancelled,
 .badge-status-cancelled,
 .badge.bg-danger,
 .badge.text-bg-danger {
   background-color: transparent !important;
-  background: none !important;
+  background: transparent !important;
   color: var(--status-danger) !important;
   border: none !important;
 }
 
+.status-neutral,
 .badge-status-neutral,
 .badge.bg-secondary,
 .badge.bg-info,
 .badge.text-bg-secondary {
   background-color: transparent !important;
-  background: none !important;
+  background: transparent !important;
   color: var(--text-secondary) !important;
   border: none !important;
 }
 
+.status-warning,
 .badge.bg-warning,
 .badge.text-bg-warning {
   background-color: transparent !important;
-  background: none !important;
+  background: transparent !important;
   color: var(--status-warning) !important;
   border: none !important;
 }

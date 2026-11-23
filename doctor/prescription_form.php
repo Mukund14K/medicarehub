@@ -156,7 +156,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="col-md-3">
                 <div class="text-muted small">Status</div>
                 <div>
-                    <span class="badge <?php echo getStatusBadgeClass($appointment['status']); ?>">
+                    <span class="<?php echo getStatusBadgeClass($appointment['status']); ?>">
                         <?php echo e($appointment['status']); ?>
                     </span>
                 </div>

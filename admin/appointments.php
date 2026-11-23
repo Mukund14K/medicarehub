@@ -128,10 +128,10 @@ require_once __DIR__ . '/../includes/header.php';
                 <?php else: ?>
                     <?php foreach ($appointments as $a): ?>
                         <?php
-                        $badgeClass = match ($a['status']) {
-                            'Completed' => 'badge-status-completed',
-                            'Cancelled' => 'badge-status-cancelled',
-                            default     => 'badge-status-scheduled',
+                        $statusClass = match ($a['status']) {
+                            'Completed' => 'status-completed',
+                            'Cancelled' => 'status-cancelled',
+                            default     => 'status-scheduled',
                         };
                         ?>
                         <tr>
@@ -146,7 +146,7 @@ require_once __DIR__ . '/../includes/header.php';
                             </td>
                             <td class="tabular-nums"><?php echo formatDate($a['appointment_date']); ?></td>
                             <td>
-                                <span class="badge <?php echo $badgeClass; ?>"><?php echo e($a['status']); ?></span>
+                                <span class="<?php echo $statusClass; ?>"><?php echo e($a['status']); ?></span>
                             </td>
                             <td class="text-end">
                                 <a href="/medicarehub/admin/appointment_form.php?id=<?php echo $a['appointment_id']; ?>" class="table-action-link">Edit</a>

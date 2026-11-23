@@ -143,7 +143,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <td><?php echo e($r['specialization']); ?></td>
                                 <td><?php echo formatDate($r['appointment_date']); ?></td>
                                 <td>
-                                    <span class="badge <?php echo getStatusBadgeClass($r['status']); ?>">
+                                    <span class="<?php echo getStatusBadgeClass($r['status']); ?>">
                                         <?php echo e($r['status']); ?>
                                     </span>
                                 </td>
@@ -287,7 +287,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <td><?php echo e($r['specialization']); ?></td>
                                 <td><?php echo formatDate($r['appointment_date']); ?></td>
                                 <td>
-                                    <span class="badge <?php echo getStatusBadgeClass($r['status']); ?>">
+                                    <span class="<?php echo getStatusBadgeClass($r['status']); ?>">
                                         <?php echo e($r['status']); ?>
                                     </span>
                                 </td>

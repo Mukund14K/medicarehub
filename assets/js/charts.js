@@ -7,13 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!chartData) return;
 
     const fontFamily = "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-    const accentColor = '#1F4E79';
+    const accentColor = '#7A1C28';
     const borderColor = '#DADFE6';
     const textSecondary = '#5B6675';
 
     // ──────────────────────────────────────────────
     // 1. Bar Chart: Appointments by Specialist
-    // Single color: --accent (#1F4E79), flat, no animation
+    // Single color: --accent (#7A1C28 Maroon), flat, no animation
     // ──────────────────────────────────────────────
     const appointmentsCtx = document.getElementById('appointmentsChart');
     if (appointmentsCtx) {
@@ -76,13 +76,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ──────────────────────────────────────────────
     // 2. Status Chart: Horizontal Bar Chart
-    // Shades of grey-blue: #1F4E79 (Scheduled), #6B8CAE (Completed), #B7C4D3 (Cancelled)
+    // Colors: #7A1C28 (Scheduled), #2E6B4F (Completed), #A12C2C (Cancelled)
     // ──────────────────────────────────────────────
     const statusCtx = document.getElementById('statusChart');
     if (statusCtx) {
         const statusLabels = ['Scheduled', 'Completed', 'Cancelled'];
         const statusCounts = chartData.statusCounts || [0, 0, 0];
-        const statusColors = ['#1F4E79', '#6B8CAE', '#B7C4D3'];
+        const statusColors = ['#7A1C28', '#2E6B4F', '#A12C2C'];
 
         new Chart(statusCtx, {
             type: 'bar',

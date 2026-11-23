@@ -158,15 +158,15 @@ function formatCurrency(float $amount): string
 }
 
 /**
- * Return a Bootstrap badge class based on appointment status.
+ * Return a CSS status class based on appointment status (pure unboxed text).
  */
 function getStatusBadgeClass(string $status): string
 {
     return match (strtolower($status)) {
-        'scheduled' => 'bg-primary',
-        'completed' => 'bg-success',
-        'cancelled' => 'bg-danger',
-        default     => 'bg-secondary',
+        'scheduled' => 'status-scheduled',
+        'completed' => 'status-completed',
+        'cancelled' => 'status-cancelled',
+        default     => 'status-neutral',
     };
 }
 

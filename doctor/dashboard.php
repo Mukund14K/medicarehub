@@ -133,7 +133,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <td><?php echo e((string)$a['age']); ?> yrs, <?php echo e($a['gender']); ?></td>
                             <td><?php echo e($a['phone']); ?></td>
                             <td>
-                                <span class="badge <?php echo getStatusBadgeClass($a['status']); ?>">
+                                <span class="<?php echo getStatusBadgeClass($a['status']); ?>">
                                     <?php echo e($a['status']); ?>
                                 </span>
                             </td>
@@ -189,7 +189,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <td><?php echo e((string)$a['age']); ?> yrs, <?php echo e($a['gender']); ?></td>
                             <td><?php echo e($a['phone']); ?></td>
                             <td>
-                                <span class="badge <?php echo getStatusBadgeClass($a['status']); ?>">
+                                <span class="<?php echo getStatusBadgeClass($a['status']); ?>">
                                     <?php echo e($a['status']); ?>
                                 </span>
                             </td>
