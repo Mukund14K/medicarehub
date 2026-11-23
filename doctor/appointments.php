@@ -146,7 +146,7 @@ require_once __DIR__ . '/../includes/header.php';
                                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                     <input type="hidden" name="action" value="complete">
                                     <input type="hidden" name="appointment_id" value="<?php echo $a['appointment_id']; ?>">
-                                    <button type="submit" class="table-action-link border-0 bg-transparent p-0" onclick="return confirm('Mark this appointment as Completed?');">Complete</button>
+                                    <button type="submit" class="table-action-link text-success border-0 bg-transparent p-0" onclick="return confirm('Mark this appointment as Completed?');">Complete</button>
                                 </form>
                             <?php endif; ?>
                             <?php if ($a['prescription_count'] > 0): ?>

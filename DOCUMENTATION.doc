@@ -387,7 +387,7 @@
         <tbody>
             <tr>
                 <td><code>assets/css/style.css</code></td>
-                <td>Enterprise design system stylesheet; defines IBM Plex Sans, clinical maroon theme (<code>#7A1C28</code>), 4px radius, and unboxed text statuses.</td>
+                <td>Enterprise design system stylesheet; defines IBM Plex Sans, clinical maroon theme (<code>#7A1C28</code>), 4px radius, unboxed text statuses, red for delete/cancel (<code>#A12C2C</code>), green for completed/complete (<code>#2E6B4F</code>), and default accent for edit/view.</td>
             </tr>
             <tr>
                 <td><code>assets/css/print.css</code></td>

@@ -661,6 +661,12 @@ textarea.form-control {
   font-weight: 500;
   margin-right: 12px;
   text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .table-action-link:hover {
@@ -668,12 +674,37 @@ textarea.form-control {
   text-decoration: underline;
 }
 
-.table-action-link.text-danger {
-  color: var(--status-danger) !important;
+/* Red text for Delete, Remove, Cancel */
+.table-action-link.text-danger,
+.table-action-link[data-bs-target="#deleteModal"],
+button.table-action-link.text-danger,
+.text-danger {
+  color: #A12C2C !important;
 }
 
-.table-action-link.text-danger:hover {
+.table-action-link.text-danger:hover,
+button.table-action-link.text-danger:hover {
+  color: #7A1C28 !important;
   text-decoration: underline;
+}
+
+/* Green text for Complete / Completed */
+.table-action-link.text-success,
+.status-completed,
+.badge-status-completed,
+.text-success {
+  color: #2E6B4F !important;
+}
+
+.table-action-link.text-success:hover {
+  color: #1F533C !important;
+  text-decoration: underline;
+}
+
+/* Default for Edit, View, Slip, Prescription */
+.table-action-link.action-default,
+.table-action-link:not(.text-danger):not(.text-success) {
+  color: var(--accent);
 }
 
 /* ---------- Status Indicators (Text Only - No Box or Pill) ---------- */

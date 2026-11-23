@@ -158,7 +158,7 @@ The relational database (`clinic_db`) consists of **6 normalized tables** with s
 ### Frontend Assets (`assets/`)
 | File | Short Description |
 | :--- | :--- |
-| `assets/css/style.css` | Complete design system stylesheet; defines IBM Plex Sans, clinical maroon theme (`#7A1C28`), 4px radius, and unboxed text statuses. |
+| `assets/css/style.css` | Complete design system stylesheet; defines IBM Plex Sans, clinical maroon theme (`#7A1C28`), 4px radius, unboxed text statuses, red for delete/cancel (`#A12C2C`), green for completed/complete (`#2E6B4F`), and default accent for edit/view. |
 | `assets/css/print.css` | Print-only stylesheet hiding navigation bars, toolbars, and buttons for clean black-and-white physical document printing. |
 | `assets/js/app.js` | UI script handling mobile sidebar offcanvas toggling, global delete modal parameter binding, and alert dismissals. |
 | `assets/js/booking.js` | Client-side AJAX script powering the 3-step patient appointment booking flow and physician table selection. |
