@@ -108,7 +108,7 @@ The relational database (`clinic_db`) consists of **6 normalized tables** with s
 | `includes/functions.php` | Central utility toolkit: XSS output escaping (`e()`), server-side pagination (`paginate()`), CSV streaming (`exportCSV()`), and date/currency formatters. |
 | `includes/header.php` | Global layout header; loads IBM Plex Sans fonts, renders the 56px top bar with breadcrumbs and date, and provides cache-busting CSS links. |
 | `includes/footer.php` | Global layout footer; injects Bootstrap scripts, loads `app.js`, and renders the universal record deletion confirmation modal. |
-| `includes/sidebar_admin.php` | Admin 240px navigation drawer with section labels (`OVERVIEW`, `MANAGEMENT`, `REPORTS`), outline icons, and user session details. |
+| `includes/sidebar_admin.php` | Admin 240px navigation drawer with section labels (`MANAGEMENT`, `REPORTS & SQL`), text-only menu items, and user session details. |
 | `includes/sidebar_doctor.php` | Doctor-specific navigation sidebar providing direct access to the queue, appointment calendar, and patient cohort. |
 | `includes/sidebar_patient.php` | Patient-facing sidebar linking to dashboard, booking stepper, appointment records, prescription archive, and profile. |
 
@@ -127,6 +127,7 @@ The relational database (`clinic_db`) consists of **6 normalized tables** with s
 | `admin/appointments.php` | Master appointment schedule with patient/doctor search, status dropdown filters, and rescheduling tools. |
 | `admin/appointment_form.php` | Appointment creation and editing form linking patients and physicians with date selection and status tracking. |
 | `admin/reports.php` | SQL report generator running 5 relational queries (a–e) with tabbed switching, monospace SQL inspection, and CSV export. |
+| `admin/sql_runner.php` | Interactive SQL Query Runner allowing administrators to execute SQL queries directly against `clinic_db`, inspect results, and export CSVs. |
 | `admin/export_csv.php` | Data streaming controller that executes the active report query and pipes an RFC 4180 CSV file to the browser. |
 
 ---

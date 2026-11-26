@@ -227,13 +227,13 @@ function redirectByRole(): void
 
     switch ($_SESSION['role'] ?? '') {
         case 'admin':
-            header('Location: ' . $base . '/admin/dashboard.php');
+            header('Location: ' . $base . '/admin.php');
             break;
         case 'doctor':
-            header('Location: ' . $base . '/doctor/dashboard.php');
+            header('Location: ' . $base . '/doctor.php');
             break;
         case 'patient':
-            header('Location: ' . $base . '/patient/dashboard.php');
+            header('Location: ' . $base . '/patient.php');
             break;
         default:
             header('Location: ' . $base . '/login.php');

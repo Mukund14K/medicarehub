@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         doctorContainer.innerHTML = '<div class="empty-state">Loading available specialists...</div>';
 
-        fetch('/medicarehub/patient/get_doctors.php?specialization=' + encodeURIComponent(specialization))
+        fetch('/medicarehub/patient.php?view=get_doctors&specialization=' + encodeURIComponent(specialization))
             .then(response => {
                 if (!response.ok) throw new Error('Network error');
                 return response.json();

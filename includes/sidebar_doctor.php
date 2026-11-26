@@ -1,25 +1,26 @@
 <?php
 /**
  * MediCare Hub - Doctor Sidebar
- * Enterprise clinical software navigation
+ * Enterprise clinical software navigation (text-only menu items)
  */
 $currentPage = $_SERVER['REQUEST_URI'];
 $userName = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Doctor';
 
 $menuSections = [
     'Overview' => [
-        ['label' => 'Dashboard', 'icon' => 'bi-speedometer2', 'href' => '/medicarehub/doctor/dashboard.php'],
+        ['label' => 'Dashboard', 'match' => ['dashboard'], 'href' => '/medicarehub/doctor.php?view=dashboard'],
     ],
     'Clinical' => [
-        ['label' => 'Appointments', 'icon' => 'bi-calendar-check', 'href' => '/medicarehub/doctor/appointments.php'],
-        ['label' => 'Patients', 'icon' => 'bi-people', 'href' => '/medicarehub/doctor/patients.php'],
+        ['label' => 'Appointments', 'match' => ['appointments', 'prescription_form', 'prescription_print'], 'href' => '/medicarehub/doctor.php?view=appointments'],
+        ['label' => 'Patients', 'match' => ['patients'], 'href' => '/medicarehub/doctor.php?view=patients'],
     ],
 ];
 
 function renderDoctorSidebarContent(array $sections, string $currentPage, string $userName): string {
+    $activeView = $_GET['view'] ?? 'dashboard';
     ob_start(); ?>
     <!-- Logo area -->
-    <a href="/medicarehub/doctor/dashboard.php" class="sidebar-header">
+    <a href="/medicarehub/doctor.php?view=dashboard" class="sidebar-header">
         <span class="sidebar-mark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16M4 12h16"/>
@@ -33,10 +34,9 @@ function renderDoctorSidebarContent(array $sections, string $currentPage, string
         <?php foreach ($sections as $sectionTitle => $items): ?>
             <div class="sidebar-section-label"><?php echo htmlspecialchars($sectionTitle); ?></div>
             <?php foreach ($items as $item): 
-                $isActive = str_contains($currentPage, $item['href']);
+                $isActive = in_array($activeView, $item['match'] ?? [], true);
             ?>
                 <a class="sidebar-nav-item <?php echo $isActive ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>">
-                    <i class="bi <?php echo htmlspecialchars($item['icon']); ?>" style="display: inline-block !important;"></i>
                     <span><?php echo htmlspecialchars($item['label']); ?></span>
                 </a>
             <?php endforeach; ?>

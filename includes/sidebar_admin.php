@@ -1,30 +1,29 @@
 <?php
 /**
  * MediCare Hub - Admin Sidebar
- * Enterprise clinical software navigation
+ * Enterprise clinical software navigation (text-only menu items)
  */
 $currentPage = $_SERVER['REQUEST_URI'];
 $userName = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Administrator';
 
 $menuSections = [
-    'Overview' => [
-        ['label' => 'Dashboard', 'icon' => 'bi-speedometer2', 'href' => '/medicarehub/admin/dashboard.php'],
-    ],
     'Management' => [
-        ['label' => 'Patients', 'icon' => 'bi-people', 'href' => '/medicarehub/admin/patients.php'],
-        ['label' => 'Doctors', 'icon' => 'bi-person-badge', 'href' => '/medicarehub/admin/doctors.php'],
-        ['label' => 'Medicines', 'icon' => 'bi-capsule', 'href' => '/medicarehub/admin/medicines.php'],
-        ['label' => 'Appointments', 'icon' => 'bi-calendar-check', 'href' => '/medicarehub/admin/appointments.php'],
+        ['label' => 'Patients', 'view' => 'patients', 'match' => ['patients', 'patient_form'], 'href' => '/medicarehub/admin.php?view=patients'],
+        ['label' => 'Doctors', 'view' => 'doctors', 'match' => ['doctors', 'doctor_form'], 'href' => '/medicarehub/admin.php?view=doctors'],
+        ['label' => 'Medicines', 'view' => 'medicines', 'match' => ['medicines', 'medicine_form'], 'href' => '/medicarehub/admin.php?view=medicines'],
+        ['label' => 'Appointments', 'view' => 'appointments', 'match' => ['appointments', 'appointment_form'], 'href' => '/medicarehub/admin.php?view=appointments'],
     ],
-    'Reports' => [
-        ['label' => 'Reports', 'icon' => 'bi-file-earmark-bar-graph', 'href' => '/medicarehub/admin/reports.php'],
+    'Reports & SQL' => [
+        ['label' => 'Reports', 'view' => 'reports', 'match' => ['reports'], 'href' => '/medicarehub/admin.php?view=reports'],
+        ['label' => 'SQL Query Runner', 'view' => 'sql_runner', 'match' => ['sql_runner'], 'href' => '/medicarehub/admin.php?view=sql_runner'],
     ],
 ];
 
 function renderAdminSidebarContent(array $sections, string $currentPage, string $userName): string {
+    $activeView = $_GET['view'] ?? 'patients';
     ob_start(); ?>
     <!-- Logo area -->
-    <a href="/medicarehub/admin/dashboard.php" class="sidebar-header">
+    <a href="/medicarehub/admin.php?view=patients" class="sidebar-header">
         <span class="sidebar-mark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16M4 12h16"/>
@@ -38,10 +37,9 @@ function renderAdminSidebarContent(array $sections, string $currentPage, string 
         <?php foreach ($sections as $sectionTitle => $items): ?>
             <div class="sidebar-section-label"><?php echo htmlspecialchars($sectionTitle); ?></div>
             <?php foreach ($items as $item): 
-                $isActive = str_contains($currentPage, $item['href']);
+                $isActive = in_array($activeView, $item['match'] ?? [], true);
             ?>
                 <a class="sidebar-nav-item <?php echo $isActive ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>">
-                    <i class="bi <?php echo htmlspecialchars($item['icon']); ?>" style="display: inline-block !important;"></i>
                     <span><?php echo htmlspecialchars($item['label']); ?></span>
                 </a>
             <?php endforeach; ?>

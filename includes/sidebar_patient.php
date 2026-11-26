@@ -1,29 +1,30 @@
 <?php
 /**
  * MediCare Hub - Patient Sidebar
- * Enterprise clinical software navigation
+ * Enterprise clinical software navigation (text-only menu items)
  */
 $currentPage = $_SERVER['REQUEST_URI'];
 $userName = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Patient';
 
 $menuSections = [
     'Overview' => [
-        ['label' => 'Dashboard', 'icon' => 'bi-speedometer2', 'href' => '/medicarehub/patient/dashboard.php'],
+        ['label' => 'Dashboard', 'match' => ['dashboard'], 'href' => '/medicarehub/patient.php?view=dashboard'],
     ],
     'Appointments' => [
-        ['label' => 'Book Appointment', 'icon' => 'bi-calendar-plus', 'href' => '/medicarehub/patient/book_appointment.php'],
-        ['label' => 'My Appointments', 'icon' => 'bi-calendar-check', 'href' => '/medicarehub/patient/my_appointments.php'],
+        ['label' => 'Book Appointment', 'match' => ['book_appointment'], 'href' => '/medicarehub/patient.php?view=book_appointment'],
+        ['label' => 'My Appointments', 'match' => ['my_appointments'], 'href' => '/medicarehub/patient.php?view=my_appointments'],
     ],
     'Records' => [
-        ['label' => 'Prescriptions', 'icon' => 'bi-file-earmark-medical', 'href' => '/medicarehub/patient/prescriptions.php'],
-        ['label' => 'Profile', 'icon' => 'bi-person', 'href' => '/medicarehub/patient/profile.php'],
+        ['label' => 'Prescriptions', 'match' => ['prescriptions', 'prescription_print'], 'href' => '/medicarehub/patient.php?view=prescriptions'],
+        ['label' => 'Profile', 'match' => ['profile'], 'href' => '/medicarehub/patient.php?view=profile'],
     ],
 ];
 
 function renderPatientSidebarContent(array $sections, string $currentPage, string $userName): string {
+    $activeView = $_GET['view'] ?? 'dashboard';
     ob_start(); ?>
     <!-- Logo area -->
-    <a href="/medicarehub/patient/dashboard.php" class="sidebar-header">
+    <a href="/medicarehub/patient.php?view=dashboard" class="sidebar-header">
         <span class="sidebar-mark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 4v16M4 12h16"/>
@@ -37,10 +38,9 @@ function renderPatientSidebarContent(array $sections, string $currentPage, strin
         <?php foreach ($sections as $sectionTitle => $items): ?>
             <div class="sidebar-section-label"><?php echo htmlspecialchars($sectionTitle); ?></div>
             <?php foreach ($items as $item): 
-                $isActive = str_contains($currentPage, $item['href']);
+                $isActive = in_array($activeView, $item['match'] ?? [], true);
             ?>
                 <a class="sidebar-nav-item <?php echo $isActive ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>">
-                    <i class="bi <?php echo htmlspecialchars($item['icon']); ?>" style="display: inline-block !important;"></i>
                     <span><?php echo htmlspecialchars($item['label']); ?></span>
                 </a>
             <?php endforeach; ?>

@@ -298,6 +298,10 @@
                 <td>Relational SQL reporting engine supporting 5 specialized queries (a through e) with monospace query inspection and CSV export.</td>
             </tr>
             <tr>
+                <td><code>admin/sql_runner.php</code></td>
+                <td>Interactive SQL Query Runner allowing administrators to execute SQL statements directly against <code>clinic_db</code>, view tabular results, and export CSVs.</td>
+            </tr>
+            <tr>
                 <td><code>admin/export_csv.php</code></td>
                 <td>Data streaming endpoint that executes the selected report query and streams an RFC 4180 CSV file to the browser.</td>
             </tr>
