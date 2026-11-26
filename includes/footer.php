@@ -14,12 +14,14 @@
                     </div>
                     <div class="modal-body">
                         <p class="mb-2">Are you sure you want to delete this record? This action cannot be undone.</p>
-                        <p class="text-muted small mb-0" id="deleteModalItemName"></p>
+                        <p class="text-muted small mb-0 item-name" id="deleteItemName"></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <form id="deleteForm" method="POST" class="d-inline m-0">
                             <input type="hidden" name="csrf_token" value="<?php echo function_exists('generateCSRFToken') ? generateCSRFToken() : ''; ?>">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" id="deleteIdInput" value="">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </div>

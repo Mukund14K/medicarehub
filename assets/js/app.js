@@ -73,21 +73,25 @@ document.addEventListener('DOMContentLoaded', function () {
     if (deleteModal) {
         deleteModal.addEventListener('show.bs.modal', function (event) {
             const triggerButton = event.relatedTarget;
+            if (!triggerButton) return;
 
-            // Get action URL and item name from trigger button data attributes
             const actionUrl = triggerButton.getAttribute('data-action');
+            const itemId = triggerButton.getAttribute('data-id');
             const itemName = triggerButton.getAttribute('data-name');
 
-            // Set the form action
-            const deleteForm = deleteModal.querySelector('form');
+            const deleteForm = deleteModal.querySelector('#deleteForm') || deleteModal.querySelector('form');
             if (deleteForm && actionUrl) {
                 deleteForm.setAttribute('action', actionUrl);
             }
 
-            // Display the item name in the modal
-            const itemNameDisplay = deleteModal.querySelector('.item-name');
-            if (itemNameDisplay && itemName) {
-                itemNameDisplay.textContent = itemName;
+            const deleteIdInput = document.getElementById('deleteIdInput');
+            if (deleteIdInput && itemId) {
+                deleteIdInput.value = itemId;
+            }
+
+            const itemNameDisplay = document.getElementById('deleteItemName') || deleteModal.querySelector('.item-name');
+            if (itemNameDisplay) {
+                itemNameDisplay.textContent = itemName ? '"' + itemName + '"' : 'this record';
             }
         });
     }
