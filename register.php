@@ -72,10 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$name, (int)$age, $gender, $phone]);
                 $patientId = (int)$pdo->lastInsertId();
 
-                // 2. Insert User
-                $hash = password_hash($password, PASSWORD_DEFAULT);
+                // 2. Insert User (plain-text password)
                 $stmt = $pdo->prepare('INSERT INTO Users (username, password_hash, role, patient_id) VALUES (?, ?, "patient", ?)');
-                $stmt->execute([$username, $hash, $patientId]);
+                $stmt->execute([$username, $password, $patientId]);
 
                 $pdo->commit();
 

@@ -205,16 +205,16 @@ INSERT INTO Prescription (appointment_id, medicine_id, dosage, duration_days) VA
 
 -- ============================================================
 -- Seed Data: Users (7 accounts)
--- Passwords hashed with PHP password_hash (bcrypt)
+-- Plain-text passwords for local demonstration
 -- ============================================================
 INSERT INTO Users (username, password_hash, role, patient_id, doctor_id) VALUES
-('admin',     '$2y$10$U6bbALJt4z1AS0yOnBSp5OAmLvBjc4Jrdsy879dNKJmvIs4pje0P.', 'admin',   NULL, NULL),
-('dr.mehta',  '$2y$10$kSREteK2o1JXgZ3Mg0.lh.rkhw1XUjxNbyHvU2JE..8NT0rBPx3uK', 'doctor',  NULL, 1),
-('dr.sharma', '$2y$10$kSREteK2o1JXgZ3Mg0.lh.rkhw1XUjxNbyHvU2JE..8NT0rBPx3uK', 'doctor',  NULL, 2),
-('dr.patel',  '$2y$10$kSREteK2o1JXgZ3Mg0.lh.rkhw1XUjxNbyHvU2JE..8NT0rBPx3uK', 'doctor',  NULL, 3),
-('rahul',     '$2y$10$DTkY1K0BkZQB9KkwAe9GgelRxGLnTkxDrlBvLDLfpAhoO7I8By1v6', 'patient', 1,    NULL),
-('sneha',     '$2y$10$DTkY1K0BkZQB9KkwAe9GgelRxGLnTkxDrlBvLDLfpAhoO7I8By1v6', 'patient', 2,    NULL),
-('vikram',    '$2y$10$DTkY1K0BkZQB9KkwAe9GgelRxGLnTkxDrlBvLDLfpAhoO7I8By1v6', 'patient', 3,    NULL);
+('admin',     'admin123',   'admin',   NULL, NULL),
+('dr.mehta',  'doctor123',  'doctor',  NULL, 1),
+('dr.sharma', 'doctor123',  'doctor',  NULL, 2),
+('dr.patel',  'doctor123',  'doctor',  NULL, 3),
+('rahul',     'patient123', 'patient', 1,    NULL),
+('sneha',     'patient123', 'patient', 2,    NULL),
+('vikram',    'patient123', 'patient', 3,    NULL);
 
 -- ============================================================
 -- End of MediCare Hub Database Setup
